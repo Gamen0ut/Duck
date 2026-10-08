@@ -157,30 +157,8 @@ PluginSettings {
         color: Theme.primary
     }
 
-    DankButton {
-        id: resetButton
-        property bool armed: false
-
-        text: armed ? "Click again to confirm" : "Reset to defaults"
-        iconName: armed ? "warning" : "restart_alt"
-        backgroundColor: armed ? Theme.error : Theme.surfaceVariant
-        textColor: armed ? Theme.surface : Theme.surfaceText
-
-        onClicked: {
-            if (!armed) {
-                armed = true
-                disarmTimer.restart()
-                return
-            }
-            armed = false
-            disarmTimer.stop()
-            root.resetToDefaults()
-        }
-
-        Timer {
-            id: disarmTimer
-            interval: 3000
-            onTriggered: resetButton.armed = false
-        }
+    ConfirmButton {
+        idleText: "Reset to defaults"
+        onConfirmed: root.resetToDefaults()
     }
 }
