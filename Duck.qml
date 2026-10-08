@@ -3,6 +3,7 @@ import qs.Common
 import qs.Services
 import qs.Widgets
 import qs.Modules.Plugins
+import "DuckStats.js" as Stats
 
 PluginComponent {
     id: root
@@ -15,6 +16,7 @@ PluginComponent {
     property color quackColor: (pluginData.useCustomColor && pluginData.quackColor) ? pluginData.quackColor : Theme.primary
     property bool randomQuack: pluginData.randomQuack ?? false
     property var quackPhrases: (pluginData.quackPhrases || []).map(p => p.text).filter(t => t)
+    property bool showCounter: pluginData.showCounter ?? false
 
     property bool quacking: false
     property string currentQuack: quackText
@@ -29,8 +31,89 @@ PluginComponent {
         currentQuack = pickQuack()
         quacking = true
         resetTimer.restart()
+        recordQuack()
         if (showToast)
             ToastService.showInfo(duckEmoji + " " + currentQuack)
+    }
+
+    // ── Stats (plugin state, not settings) ────────────────
+
+    readonly property string stateId: pluginId || "duck"
+    property var stats: Stats.emptyStats()
+
+    function loadStats() {
+        if (!pluginService)
+            return
+        stats = Stats.normalize(pluginService.loadPluginState(stateId, "stats", null))
+        if (!quacking && stats.lastQuack)
+            currentQuack = stats.lastQuack
+    }
+
+    function recordQuack() {
+        stats = Stats.record(stats, currentQuack, new Date())
+        if (pluginService)
+            pluginService.savePluginState(stateId, "stats", stats)
+    }
+
+    function tooltipText() {
+        const s = Stats.summary(stats, new Date())
+        let text = duckEmoji + " " + s.total + (s.total === 1 ? " quack" : " quacks") + " · " + s.today + " today"
+        if (s.streak > 1)
+            text += " · 🔥 " + s.streak + "-day streak"
+        return text
+    }
+
+    Component.onCompleted: loadStats()
+    onPluginServiceChanged: loadStats()
+
+    // Another Duck instance (other bar/monitor) or the settings page changed
+    // the stats: reload so every instance shows the same numbers.
+    Connections {
+        target: root.pluginService
+        enabled: root.pluginService !== null
+        function onPluginStateChanged(changedId) {
+            if (changedId === root.stateId)
+                root.loadStats()
+        }
+    }
+
+    // ── Tooltip ───────────────────────────────────────────
+    // DankTooltip is its own layer window positioned in screen coordinates,
+    // so it isn't clipped by the bar (same approach as DMS's Vpn widget).
+
+    Loader {
+        id: tooltipLoader
+        active: false
+        sourceComponent: DankTooltip {}
+    }
+
+    function showTooltip(item) {
+        if (!parentScreen)
+            return
+        tooltipLoader.active = true
+        if (!tooltipLoader.item)
+            return
+        const edge = axis?.edge || "top"
+        const screen = parentScreen
+        if (edge === "left" || edge === "right") {
+            const pos = item.mapToItem(null, item.width / 2, item.height / 2)
+            const x = edge === "left"
+                ? barThickness + barSpacing + Theme.spacingXS
+                : screen.width - barThickness - barSpacing - Theme.spacingXS
+            tooltipLoader.item.show(tooltipText(), x, pos.y, screen, edge === "left", edge === "right")
+        } else {
+            const pos = item.mapToItem(null, item.width / 2, 0)
+            const y = edge === "bottom"
+                ? screen.height - barThickness - barSpacing - Theme.spacingXS - (Theme.fontSizeSmall * 1.5 + Theme.spacingS * 2)
+                : barThickness + barSpacing + Theme.spacingXS
+            tooltipLoader.item.show(tooltipText(), pos.x, y, screen, false, false)
+        }
+    }
+
+    function hideTooltip() {
+        if (tooltipLoader.item)
+            tooltipLoader.item.hide()
+        tooltipLoader.active = false
     }
 
     Timer {
@@ -55,6 +138,13 @@ PluginComponent {
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 StyledText {
+                    visible: root.showCounter && !root.quacking
+                    text: root.stats.total
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                StyledText {
                     visible: root.quacking
                     text: root.currentQuack
                     font.pixelSize: Theme.fontSizeMedium
@@ -66,8 +156,14 @@ PluginComponent {
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.quack()
+                onClicked: {
+                    root.quack()
+                    root.showTooltip(parent) // refresh the numbers
+                }
+                onEntered: root.showTooltip(parent)
+                onExited: root.hideTooltip()
             }
         }
     }
@@ -88,6 +184,13 @@ PluginComponent {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 StyledText {
+                    visible: root.showCounter && !root.quacking
+                    text: root.stats.total
+                    font.pixelSize: Theme.fontSizeSmall
+                    color: Theme.surfaceVariantText
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                StyledText {
                     visible: root.quacking
                     text: "Q!"
                     font.pixelSize: Theme.fontSizeSmall
@@ -99,8 +202,14 @@ PluginComponent {
 
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.quack()
+                onClicked: {
+                    root.quack()
+                    root.showTooltip(parent) // refresh the numbers
+                }
+                onEntered: root.showTooltip(parent)
+                onExited: root.hideTooltip()
             }
         }
     }

@@ -77,6 +77,13 @@ PluginSettings {
         defaultValue: false
     }
 
+    ToggleSetting {
+        settingKey: "showCounter"
+        label: "Show quack counter"
+        description: "Show the total number of quacks next to the duck"
+        defaultValue: false
+    }
+
     ColorSetting {
         settingKey: "quackColor"
         label: "Quack color"

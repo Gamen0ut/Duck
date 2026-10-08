@@ -32,17 +32,17 @@ Try every settings widget DMS offers.
 
 ## 0.3.0 — State & persistence
 
-- [ ] 🟢 **Quack counter** shown in the pill or tooltip. *Learns:* `PluginService.savePluginData` / `loadPluginData`
+- [x] 🟢 **Quack counter** shown in the pill or tooltip. *Learns:* `savePluginState` / `loadPluginState`, `pluginStateChanged`, `DankTooltip`
 - [ ] 🟢 **Reset counter** button in settings. *Learns:* writing data from the settings page
-- [ ] 🟡 **Daily stats**: quacks per day, current streak. *Learns:* storing structured JSON, dates
+- [x] 🟡 **Daily stats**: quacks per day, current streak. *Learns:* storing structured JSON, dates (local-time day keys, pruning old days)
 - [ ] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
-- [ ] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
+- [x] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
 
 ## 0.4.0 — Interaction
 
 - [ ] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `MouseArea.acceptedButtons`
 - [ ] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`
-- [ ] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
+- [x] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
 - [ ] 🟡 **Double-click** = "QUACK QUACK" combo. *Learns:* click timing, gesture disambiguation
 - [ ] 🟢 **Toast levels**: info / warning / error depending on mood. *Learns:* `ToastService` variants
 
@@ -127,5 +127,8 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`pluginData` updates live**: bindings like `pluginData.quackDuration || 1500` re-evaluate as soon as a setting changes, so you don't need a reload.
 - **No built-in reset / delete-key API** for plugin settings. But every `*Setting` exposes `settingKey` + `defaultValue`, so a reset can loop over `content` and `saveValue()` each default. `savePluginData` emits `pluginDataChanged`, which makes `PluginSettings` reload every control.
 - **Don't symlink the plugin folder.** Qt checks that a file's path matches its real path, so through a symlinked folder any import of a sibling file (`import "X.js"`, another `.qml` used as a type) fails with *File name case mismatch*. A single self-contained `.qml` works, which hides the problem. `dev.sh` copies the files instead.
+- **Settings vs state.** `savePluginData` = user *settings* (in DMS's settings file, edited by the settings page). `savePluginState` = runtime *data* (counters, history) in `~/.local/state/DankMaterialShell/plugins/duck_state.json`. Writes are batched by a timer, and `pluginStateChanged(id)` fires so other instances/the settings page can refresh.
+- **Bar tooltips**: `DankTooltipV2` draws inside the widget's own window (clipped by the bar). Bar widgets use `DankTooltip` in a `Loader`, which is its own layer window placed in screen coordinates; compute the position from `axis.edge`, `barThickness`, `barSpacing`, `parentScreen` (see DMS's `Vpn.qml`).
+- **Keep logic in a `.pragma library` JS file** to unit-test it with `node` (strip the pragma line first).
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.4–0.9.
