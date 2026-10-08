@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
-# Usage: ./dev.sh link | reload | status | release <x.y.z>
+# Usage: ./dev.sh install | reload | status | release <x.y.z>
 set -e
+shopt -s nullglob
 DIR="$(cd "$(dirname "$0")" && pwd)"
 DEST="$HOME/.config/DankMaterialShell/plugins/Duck"
+
+# Files DMS needs at runtime (keep in sync with .github/workflows/release.yml).
+# The plugin is copied, not symlinked: Qt refuses to import sibling files
+# (.js, other .qml) through a symlinked folder ("File name case mismatch").
+install_plugin() {
+  cd "$DIR"
+  rm -rf "$DEST"
+  mkdir -p "$DEST"
+  cp plugin.json *.qml *.js "$DEST"/
+}
+
 case "$1" in
-  link)   mkdir -p "$(dirname "$DEST")"; ln -sfn "$DIR" "$DEST"; echo "Linked $DIR -> $DEST" ;;
-  reload) dms ipc call plugins reload duck ;;
-  status) dms ipc call plugins status duck ;;
+  install) install_plugin; echo "Installed $DIR -> $DEST" ;;
+  reload)  install_plugin; dms ipc call plugins reload duck ;;
+  status)  dms ipc call plugins status duck ;;
   release)
     v="$2"
     [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Usage: $0 release <x.y.z>"; exit 1; }
@@ -20,5 +32,5 @@ case "$1" in
     git tag -a "v$v" -m "v$v"
     echo "Tagged v$v. Review with: git show --stat HEAD, then: git push --follow-tags"
     ;;
-  *)      echo "Usage: $0 link | reload | status | release <x.y.z>"; exit 1 ;;
+  *)       echo "Usage: $0 install | reload | status | release <x.y.z>"; exit 1 ;;
 esac

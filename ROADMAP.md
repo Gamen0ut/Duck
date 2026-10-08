@@ -126,5 +126,6 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`ListSettingWithInput` saves an array of objects** keyed by field `id` (`[{text: "Quack!"}, …]`), not plain strings.
 - **`pluginData` updates live**: bindings like `pluginData.quackDuration || 1500` re-evaluate as soon as a setting changes, so you don't need a reload.
 - **No built-in reset / delete-key API** for plugin settings. But every `*Setting` exposes `settingKey` + `defaultValue`, so a reset can loop over `content` and `saveValue()` each default. `savePluginData` emits `pluginDataChanged`, which makes `PluginSettings` reload every control.
+- **Don't symlink the plugin folder.** Qt checks that a file's path matches its real path, so through a symlinked folder any import of a sibling file (`import "X.js"`, another `.qml` used as a type) fails with *File name case mismatch*. A single self-contained `.qml` works, which hides the problem. `dev.sh` copies the files instead.
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.4–0.9.
