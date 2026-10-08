@@ -1,0 +1,19 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: plugin.json is valid and complete
+        run: |
+          jq -e '.id and .name and .version and .component and .type' plugin.json
+          for f in $(jq -r '.component, .settings // empty' plugin.json); do
+            test -f "$f" || { echo "Missing $f" >&2; exit 1; }
+          done
+          jq -r .version plugin.json | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'
