@@ -1,0 +1,12 @@
+{
+  "id": "duck",
+  "name": "Duck",
+  "description": "A duck in your bar that says quack!",
+  "version": "0.1.0",
+  "author": "Gamen0ut",
+  "icon": "pets",
+  "type": "widget",
+  "component": "./Duck.qml",
+  "settings": "./DuckSettings.qml",
+  "permissions": ["settings_read", "settings_write"]
+}
