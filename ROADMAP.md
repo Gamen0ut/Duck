@@ -27,6 +27,7 @@ Try every settings widget DMS offers.
 - [x] 🟢 **Quack color** override. *Learns:* `ColorSetting`, mixing user colors with `Theme`
 - [x] 🟡 **Random quack list**: a list of phrases, pick one at random. *Learns:* `ListSettingWithInput`, arrays of objects in `pluginData`
 - [x] 🟢 **Hide emoji when quacking** toggle. *Learns:* conditional layout in pills
+- [x] 🟢 **Reset to defaults** button with click-twice confirmation. *Learns:* `DankButton`, iterating `PluginSettings.content`, `saveValue`
 - [x] 🟡 **Settings sections** with headers and descriptions. *Learns:* settings page layout, `StyledText`, spacing tokens
 
 ## 0.3.0 — State & persistence
@@ -124,5 +125,6 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`ColorSetting` saves a string** (`value.toString()`, e.g. `#ff8800`). Older saves could be `{}`, so check `typeof` before trusting it.
 - **`ListSettingWithInput` saves an array of objects** keyed by field `id` (`[{text: "Quack!"}, …]`), not plain strings.
 - **`pluginData` updates live**: bindings like `pluginData.quackDuration || 1500` re-evaluate as soon as a setting changes, so you don't need a reload.
+- **No built-in reset / delete-key API** for plugin settings. But every `*Setting` exposes `settingKey` + `defaultValue`, so a reset can loop over `content` and `saveValue()` each default. `savePluginData` emits `pluginDataChanged`, which makes `PluginSettings` reload every control.
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.4–0.9.

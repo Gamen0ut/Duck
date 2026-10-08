@@ -1,11 +1,27 @@
 import QtQuick
 import qs.Common
 import qs.Modules.Plugins
+import qs.Services
 import qs.Widgets
 
 PluginSettings {
     id: root
     pluginId: "duck"
+
+    // Writes every setting's defaultValue back to storage. Saving emits
+    // pluginDataChanged, which makes PluginSettings reload each control.
+    function resetToDefaults() {
+        for (let i = 0; i < content.length; i++) {
+            const child = content[i]
+            if (child.settingKey === undefined || child.defaultValue === undefined)
+                continue
+            let value = child.defaultValue
+            if (typeof value === "object" && value !== null && !Array.isArray(value))
+                value = value.toString() // ColorSetting stores colors as "#rrggbb"
+            saveValue(child.settingKey, value)
+        }
+        ToastService.showInfo("🦆 Duck settings reset to defaults")
+    }
 
     StyledText {
         width: parent.width
@@ -129,5 +145,42 @@ PluginSettings {
         label: "Show toast"
         description: "Also pop a notification when the duck quacks"
         defaultValue: true
+    }
+
+    // ── Reset ─────────────────────────────────────────────
+
+    StyledText {
+        width: parent.width
+        text: "Reset"
+        font.pixelSize: Theme.fontSizeMedium
+        font.weight: Font.Bold
+        color: Theme.primary
+    }
+
+    DankButton {
+        id: resetButton
+        property bool armed: false
+
+        text: armed ? "Click again to confirm" : "Reset to defaults"
+        iconName: armed ? "warning" : "restart_alt"
+        backgroundColor: armed ? Theme.error : Theme.surfaceVariant
+        textColor: armed ? Theme.surface : Theme.surfaceText
+
+        onClicked: {
+            if (!armed) {
+                armed = true
+                disarmTimer.restart()
+                return
+            }
+            armed = false
+            disarmTimer.stop()
+            root.resetToDefaults()
+        }
+
+        Timer {
+            id: disarmTimer
+            interval: 3000
+            onTriggered: resetButton.armed = false
+        }
     }
 }

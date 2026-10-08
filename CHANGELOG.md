@@ -15,6 +15,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Random quacks from a user-defined phrase list (`ListSettingWithInput`).
 - Option to hide the duck while it quacks.
 - Settings page split into Look / Quack / Notifications sections.
+- "Reset to defaults" button (click twice to confirm).
 
 ## [0.1.0] - 2026-10-09
 
