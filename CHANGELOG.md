@@ -8,6 +8,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-09
+
 ### Added
 - Duck picker: 🦆 🐤 🐥 🐣 🦢 (`SelectionSetting`).
 - Quack duration slider, 500–5000 ms (`SliderSetting`).
@@ -26,5 +28,6 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Settings: custom quack text, toast toggle.
 - `dev.sh` helper to link, reload and check the plugin status.
 
-[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Gamen0ut/Duck/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Gamen0ut/Duck/releases/tag/v0.1.0

@@ -2,7 +2,7 @@
   "id": "duck",
   "name": "Duck",
   "description": "A duck in your bar that says quack!",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Gamen0ut",
   "icon": "pets",
   "type": "widget",
