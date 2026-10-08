@@ -7,9 +7,11 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 ## Features
 
 - Works in horizontal and vertical bars
-- Click the duck → it shows the quack text for 1.5 s
+- Click the duck → it shows the quack text (duration is configurable)
+- Pick your bird: 🦆 🐤 🐥 🐣 🦢
+- Custom quack color, or follow the theme accent
+- Random quacks from your own phrase list
 - Optional toast notification on every quack
-- Settings: custom quack text, toast on/off
 
 ## Requirements
 
@@ -34,10 +36,17 @@ Download `Duck-vX.Y.Z.zip` from [Releases](https://github.com/Gamen0ut/Duck/rele
 
 ## Settings
 
-| Setting     | Key         | Default  | Description                              |
-|-------------|-------------|----------|------------------------------------------|
-| Quack text  | `quackText` | `Quack!` | What the duck says when clicked          |
-| Show toast  | `showToast` | `true`   | Also pop a notification on each quack    |
+| Setting                    | Key                     | Default      | Description                                     |
+|----------------------------|-------------------------|--------------|-------------------------------------------------|
+| Duck                       | `duckEmoji`             | `🦆`         | Which bird lives in your bar                    |
+| Hide duck while quacking   | `hideEmojiWhenQuacking` | `false`      | Only show the quack text during a quack         |
+| Custom quack color         | `useCustomColor`        | `false`      | Use the color below instead of the theme accent |
+| Quack color                | `quackColor`            | theme accent | Color of the quack text                         |
+| Quack text                 | `quackText`             | `Quack!`     | What the duck says when clicked                 |
+| Quack duration             | `quackDuration`         | `1500` (ms)  | How long the quack stays visible                |
+| Random quacks              | `randomQuack`           | `false`      | Pick a random phrase from the list              |
+| Quack phrases              | `quackPhrases`          | `[]`         | Phrases used when random quacks are on          |
+| Show toast                 | `showToast`             | `true`       | Also pop a notification on each quack           |
 
 ## Development
 

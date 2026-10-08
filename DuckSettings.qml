@@ -15,12 +15,113 @@ PluginSettings {
         color: Theme.surfaceText
     }
 
+    StyledText {
+        width: parent.width
+        text: "A duck in your bar. Click it, it quacks."
+        font.pixelSize: Theme.fontSizeSmall
+        color: Theme.surfaceVariantText
+        wrapMode: Text.WordWrap
+    }
+
+    // ── Look ──────────────────────────────────────────────
+
+    StyledText {
+        width: parent.width
+        text: "Look"
+        font.pixelSize: Theme.fontSizeMedium
+        font.weight: Font.Bold
+        color: Theme.primary
+    }
+
+    SelectionSetting {
+        settingKey: "duckEmoji"
+        label: "Duck"
+        description: "Which bird lives in your bar"
+        options: [
+            {label: "🦆 Duck", value: "🦆"},
+            {label: "🐤 Chick", value: "🐤"},
+            {label: "🐥 Front chick", value: "🐥"},
+            {label: "🐣 Hatching", value: "🐣"},
+            {label: "🦢 Swan", value: "🦢"}
+        ]
+        defaultValue: "🦆"
+    }
+
+    ToggleSetting {
+        settingKey: "hideEmojiWhenQuacking"
+        label: "Hide duck while quacking"
+        description: "Only show the quack text during a quack"
+        defaultValue: false
+    }
+
+    ToggleSetting {
+        settingKey: "useCustomColor"
+        label: "Custom quack color"
+        description: "Use the color below instead of the theme accent"
+        defaultValue: false
+    }
+
+    ColorSetting {
+        settingKey: "quackColor"
+        label: "Quack color"
+        description: "Color of the quack text"
+        defaultValue: Theme.primary
+    }
+
+    // ── Quack ─────────────────────────────────────────────
+
+    StyledText {
+        width: parent.width
+        text: "Quack"
+        font.pixelSize: Theme.fontSizeMedium
+        font.weight: Font.Bold
+        color: Theme.primary
+    }
+
     StringSetting {
         settingKey: "quackText"
         label: "Quack text"
         description: "What the duck says when clicked"
         placeholder: "Quack!"
         defaultValue: "Quack!"
+    }
+
+    SliderSetting {
+        settingKey: "quackDuration"
+        label: "Quack duration"
+        description: "How long the quack stays visible"
+        defaultValue: 1500
+        minimum: 500
+        maximum: 5000
+        unit: "ms"
+        leftIcon: "timer"
+    }
+
+    ToggleSetting {
+        settingKey: "randomQuack"
+        label: "Random quacks"
+        description: "Pick a random phrase from the list below instead of the quack text"
+        defaultValue: false
+    }
+
+    ListSettingWithInput {
+        settingKey: "quackPhrases"
+        label: "Quack phrases"
+        description: "Phrases used when random quacks are on"
+        defaultValue: []
+        fields: [
+            {id: "text", label: "Phrase", placeholder: "Quack quack!", width: 250, required: true}
+        ]
+    }
+
+    // ── Notifications ─────────────────────────────────────
+
+    StyledText {
+        width: parent.width
+        text: "Notifications"
+        font.pixelSize: Theme.fontSizeMedium
+        font.weight: Font.Bold
+        color: Theme.primary
     }
 
     ToggleSetting {

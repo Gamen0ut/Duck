@@ -18,16 +18,16 @@ Legend: 🟢 easy · 🟡 medium · 🔴 hard. **Learns** = the DMS/Quickshell c
 
 ---
 
-## 0.2.0 — Settings playground
+## 0.2.0 — Settings playground ✅
 
 Try every settings widget DMS offers.
 
-- [ ] 🟢 **Quack duration** slider (0.5–5 s). *Learns:* `SliderSetting`, numeric `pluginData`
-- [ ] 🟢 **Duck emoji picker** (🦆 🐤 🐥 🐣 🦢). *Learns:* `SelectionSetting` / dropdown options
-- [ ] 🟢 **Quack color** override. *Learns:* `ColorSetting`, mixing user colors with `Theme`
-- [ ] 🟡 **Random quack list**: a list of phrases, pick one at random. *Learns:* `ListSetting` / list-type data
-- [ ] 🟢 **Hide emoji when quacking** toggle. *Learns:* conditional layout in pills
-- [ ] 🟡 **Settings sections** with headers and descriptions. *Learns:* settings page layout, `StyledText`, spacing tokens
+- [x] 🟢 **Quack duration** slider (0.5–5 s). *Learns:* `SliderSetting`, numeric `pluginData`
+- [x] 🟢 **Duck emoji picker** (🦆 🐤 🐥 🐣 🦢). *Learns:* `SelectionSetting` with `{label, value}` options
+- [x] 🟢 **Quack color** override. *Learns:* `ColorSetting`, mixing user colors with `Theme`
+- [x] 🟡 **Random quack list**: a list of phrases, pick one at random. *Learns:* `ListSettingWithInput`, arrays of objects in `pluginData`
+- [x] 🟢 **Hide emoji when quacking** toggle. *Learns:* conditional layout in pills
+- [x] 🟡 **Settings sections** with headers and descriptions. *Learns:* settings page layout, `StyledText`, spacing tokens
 
 ## 0.3.0 — State & persistence
 
@@ -119,4 +119,10 @@ Same duck, different entry points.
 
 Write down anything surprising about the DMS plugin API here as you go.
 
--
+- **Docs ship with DMS**: `/usr/share/quickshell/dms/PLUGINS/` has a README, a JSON schema for `plugin.json`, and ~12 example plugins. The settings components live in `/usr/share/quickshell/dms/Modules/Plugins/`.
+- **`SliderSetting` is int-only** (`property int value`), so durations are stored in ms rather than fractional seconds.
+- **`ColorSetting` saves a string** (`value.toString()`, e.g. `#ff8800`). Older saves could be `{}`, so check `typeof` before trusting it.
+- **`ListSettingWithInput` saves an array of objects** keyed by field `id` (`[{text: "Quack!"}, …]`), not plain strings.
+- **`pluginData` updates live**: bindings like `pluginData.quackDuration || 1500` re-evaluate as soon as a setting changes, so you don't need a reload.
+- **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
+- **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.4–0.9.

@@ -8,6 +8,14 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Added
+- Duck picker: 🦆 🐤 🐥 🐣 🦢 (`SelectionSetting`).
+- Quack duration slider, 500–5000 ms (`SliderSetting`).
+- Custom quack color with a toggle to go back to the theme accent (`ColorSetting`).
+- Random quacks from a user-defined phrase list (`ListSettingWithInput`).
+- Option to hide the duck while it quacks.
+- Settings page split into Look / Quack / Notifications sections.
+
 ## [0.1.0] - 2026-10-09
 
 ### Added
