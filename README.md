@@ -66,9 +66,8 @@ Duck follows [Semantic Versioning](https://semver.org/). The single source of tr
 To cut a release:
 
 1. Add your changes under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md).
-2. Run `./dev.sh release 0.2.0`: it bumps `plugin.json`, dates the changelog entry, commits and creates the `v0.2.0` tag.
-3. Add the compare link for the new version at the bottom of `CHANGELOG.md` (`git commit --amend` is fine before pushing).
-4. `git push --follow-tags`. GitHub Actions checks the tag matches `plugin.json`, zips the plugin and publishes a release with the changelog notes.
+2. Run `./dev.sh release 0.2.0`: it bumps `plugin.json`, dates the changelog entry, updates the compare links, commits and creates the `v0.2.0` tag.
+3. `git push --follow-tags`. GitHub Actions checks the tag matches `plugin.json`, zips the plugin and publishes a release with the changelog notes.
 
 Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, `chore:` …).
 
