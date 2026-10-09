@@ -38,6 +38,69 @@ Try every settings widget DMS offers.
 - [x] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
 - [x] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
 
+## 0.3.x — More achievements & milestones
+
+New achievements are mostly one line in `DuckStats.js` plus a unit test. Some need data we don't track yet (noted in *Needs*).
+
+### Milestones (total quacks)
+
+- [ ] 🟢 🎲 **The answer**: quack 42 times
+- [ ] 🟢 🕶️ **Leet quacker**: quack 1337 times
+- [ ] 🟢 💎 **Quackillionaire**: 5 000 quacks
+- [ ] 🟢 🌌 **Duck singularity**: 10 000 quacks
+
+### Daily & streaks
+
+- [ ] 🟢 🌪️ **Quack frenzy**: 100 quacks in one day
+- [ ] 🟢 📅 **Fortnight flock**: 14-day streak
+- [ ] 🟢 🗓️ **Monthly migration**: 30-day streak
+- [ ] 🟢 🏛️ **Century pond**: 100-day streak
+- [ ] 🟡 🌍 **Year of the duck**: 365-day streak. *Needs:* keep more than 90 days of history, or store `bestStreak` / `currentStreakStart` instead of recomputing
+- [ ] 🟡 🗂️ **Every day of the week**: quack at least once on each weekday. *Learns:* `Date.getDay()`
+
+### Time of day & calendar
+
+- [ ] 🟢 🦉 **Night owl**: quack between 00:00 and 04:00
+- [ ] 🟢 🐓 **Early bird**: quack between 05:00 and 07:00
+- [ ] 🟢 🎆 **Happy new quack**: quack on January 1st
+- [ ] 🟢 🎃 **Spooky quack**: quack on October 31st
+- [ ] 🟢 🎄 **Jingle quack**: quack on December 25th
+- [ ] 🟢 🐸 **Leap duck**: quack on February 29th
+- [ ] 🟡 ⏱️ **Exactly midnight**: quack at 00:00 on the dot. *Learns:* `achievement tests` that need the full `Date`, not just the summary
+
+### Speed & behavior
+
+- [ ] 🟡 ⚡ **Quack storm**: 10 quacks in 5 seconds. *Needs:* timestamps of recent quacks (in memory only, no need to persist)
+- [ ] 🟡 🐢 **Patience**: quack after not quacking for 7 days. *Needs:* `lastQuackAt` timestamp
+- [ ] 🟡 🔄 **Prodigal duck**: come back after a 30-day break
+- [ ] 🟡 🖥️ **Multi-monitor duck**: quack from two different bars/screens. *Learns:* `parentScreen.name`, multiple instances
+
+### Settings-based (playing with the plugin itself)
+
+- [ ] 🟡 🐦 **Bird watcher**: quack with every bird (🦆 🐤 🐥 🐣 🦢). *Needs:* set of birds used
+- [ ] 🟡 ✍️ **Poet**: have 10 phrases in the random list. *Learns:* reading settings (`pluginData`) inside achievement checks
+- [ ] 🟡 🤫 **Silent duck**: 50 quacks with toasts turned off
+- [ ] 🟡 🎨 **Fashionista**: change the quack color 5 times
+- [ ] 🟢 🧹 **Fresh start**: reset your stats (the unlock survives the reset!). *Learns:* keeping some state through `clearPluginState`
+
+### Meta
+
+- [ ] 🟢 🏅 **Completionist**: unlock every other achievement
+- [ ] 🟡 🥚 **Secret achievements**: hidden (`???`) in settings until unlocked. *Learns:* `hidden: true` flag in the achievement list
+
+### Systems around achievements
+
+- [ ] 🟡 **Progress bars** in settings (`63 / 100 quacks`). *Learns:* `progress(summary)` next to `test(summary)`, DMS progress widgets
+- [ ] 🟢 **Unlock date** shown under each achievement. *Learns:* storing `{id, at}` instead of plain ids (with migration in `normalize`)
+- [ ] 🟡 **Tiers** 🥉🥈🥇 for the same goal (100 / 1000 / 10 000). *Learns:* data-driven achievement definitions
+- [ ] 🟡 **Duck levels & XP**: each quack gives XP, level shown in the tooltip (Lv. 1 duckling → Lv. 10 legendary). *Learns:* derived state, curves
+- [ ] 🟡 **Evolution**: the bird evolves with level (🥚 → 🐣 → 🐥 → 🦆 → 🦢), unless a bird is picked in settings
+- [ ] 🟡 **Daily goal**: "Quack 10 times today", progress in the tooltip, small celebration toast
+- [ ] 🔴 **Weekly quests**: 3 random goals per week, rerolled every Monday. *Learns:* seeded randomness by week number
+- [ ] 🔴 **Achievement gallery** in the popout (pairs with 0.5.0)
+- [ ] 🟡 **Unlock sound / animation** (pairs with 0.6.0 & 0.7.0)
+- [ ] 🟢 **Export / import stats** as JSON. *Learns:* `FileView`, clipboard
+
 ## 0.4.0 — Interaction
 
 - [ ] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `MouseArea.acceptedButtons`
