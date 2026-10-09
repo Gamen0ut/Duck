@@ -15,6 +15,9 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - 🏅 Completionist: unlock every other achievement.
 - Unlock dates shown in the settings achievement list (for achievements unlocked from now on).
 
+### Changed
+- When more than 2 achievements unlock at once, they're announced in a single toast.
+
 ## [0.3.0] - 2026-10-09
 
 ### Added

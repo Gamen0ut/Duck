@@ -55,8 +55,8 @@ PluginComponent {
         const unlocked = Stats.newlyUnlocked(stats, now)
         if (unlocked.length > 0) {
             stats = Stats.unlock(stats, unlocked, now)
-            for (const a of unlocked)
-                ToastService.showInfo(a.icon + " Achievement unlocked: " + a.name, a.description)
+            for (const t of Stats.unlockToasts(unlocked))
+                ToastService.showInfo(t.title, t.details)
         }
         if (pluginService)
             pluginService.savePluginState(stateId, "stats", stats)

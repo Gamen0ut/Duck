@@ -38,7 +38,7 @@ Try every settings widget DMS offers.
 - [x] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
 - [x] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
 
-## 0.4.0 — Achievements+
+## 0.4.0 — Achievements+ ✅
 
 From 7 to 22 achievements, plus secret ones and unlock dates.
 
@@ -63,7 +63,7 @@ From 7 to 22 achievements, plus secret ones and unlock dates.
 - [x] 🟡 🥚 **Secret achievements**: `hidden: true`, shown as `🔒 ???` until unlocked (the calendar ones)
 - [x] 🟡 🏅 **Completionist**: unlock every other achievement (must not count itself)
 - [x] 🟢 **Unlock dates** in settings. *Learns:* additive data changes (a new `unlockedAt` map, so old saves need no migration)
-- [ ] 🟢 **Grouped toast** when more than 2 achievements unlock at once
+- [x] 🟢 **Grouped toast** when more than 2 achievements unlock at once
 
 ## Achievement backlog
 

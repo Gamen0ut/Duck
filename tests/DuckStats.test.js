@@ -9,7 +9,7 @@ const vm = require("vm")
 const source = fs.readFileSync(path.join(__dirname, "..", "DuckStats.js"), "utf8")
     .replace(/^\.pragma library$/m, "")
 const S = {}
-vm.runInNewContext(source + "\nObject.assign(exports, {emptyStats, normalize, dayKey, streak, summary, record, newlyUnlocked, unlock, ACHIEVEMENTS})", {exports: S})
+vm.runInNewContext(source + "\nObject.assign(exports, {emptyStats, normalize, dayKey, streak, summary, record, newlyUnlocked, unlock, unlockToasts, ACHIEVEMENTS})", {exports: S})
 
 const d = s => new Date(s + "T12:00:00")
 const ids = list => list.map(a => a.id)
@@ -167,6 +167,14 @@ test("unlock records the date; old saves without dates still load", () => {
     same(old.unlockedAt, {})
     // garbage and dates of achievements that aren't unlocked are dropped
     same(S.normalize({achievements: ["first"], unlockedAt: {first: "x", q10: 5}}).unlockedAt, {})
+})
+
+test("1-2 unlocks get their own toast, more are grouped into one", () => {
+    const [a, b, c] = S.ACHIEVEMENTS
+    same(S.unlockToasts([]), [])
+    same(S.unlockToasts([a]), [{title: "🥚 Achievement unlocked: First quack", details: "Quack once"}])
+    assert.strictEqual(S.unlockToasts([a, b]).length, 2)
+    same(S.unlockToasts([a, b, c]), [{title: "🏅 3 achievements unlocked!", details: "🥚 First quack · 🐣 Chatty duckling · 🎲 The answer"}])
 })
 
 test("achievement ids are unique", () => {

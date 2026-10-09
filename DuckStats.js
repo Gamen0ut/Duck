@@ -148,3 +148,14 @@ function unlock(stats, achievements, now) {
         }
     return s
 }
+
+// Toasts to show for one quack's unlocks: one each for 1-2 achievements,
+// a single grouped toast for more (e.g. catching up after an update).
+function unlockToasts(achievements) {
+    if (achievements.length <= 2)
+        return achievements.map(a => ({title: a.icon + " Achievement unlocked: " + a.name, details: a.description}))
+    return [{
+        title: "🏅 " + achievements.length + " achievements unlocked!",
+        details: achievements.map(a => a.icon + " " + a.name).join(" · ")
+    }]
+}
