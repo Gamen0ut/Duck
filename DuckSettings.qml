@@ -87,6 +87,13 @@ PluginSettings {
     }
 
     ToggleSetting {
+        settingKey: "scrollChangesBird"
+        label: "Scroll to change bird"
+        description: "Use the mouse wheel over the duck to switch birds"
+        defaultValue: true
+    }
+
+    ToggleSetting {
         settingKey: "hideEmojiWhenQuacking"
         label: "Hide duck while quacking"
         description: "Only show the quack text during a quack"

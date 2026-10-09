@@ -8,7 +8,7 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 
 - Works in horizontal and vertical bars
 - Click the duck → it shows the quack text (duration is configurable)
-- Pick your bird: 🦆 🐤 🐥 🐣 🦢
+- Pick your bird: 🦆 🐤 🐥 🐣 🦢 (in settings, or scroll over the duck)
 - Custom quack color, or follow the theme accent
 - Random quacks from your own phrase list
 - Optional toast notification on every quack
@@ -41,6 +41,7 @@ Download `Duck-vX.Y.Z.zip` from [Releases](https://github.com/Gamen0ut/Duck/rele
 | Setting                    | Key                     | Default      | Description                                     |
 |----------------------------|-------------------------|--------------|-------------------------------------------------|
 | Duck                       | `duckEmoji`             | `🦆`         | Which bird lives in your bar                    |
+| Scroll to change bird      | `scrollChangesBird`     | `true`       | Mouse wheel over the duck switches birds        |
 | Hide duck while quacking   | `hideEmojiWhenQuacking` | `false`      | Only show the quack text during a quack         |
 | Show quack counter         | `showCounter`           | `false`      | Show the total number of quacks next to the duck |
 | Custom quack color         | `useCustomColor`        | `false`      | Use the color below instead of the theme accent |
@@ -69,6 +70,7 @@ Duck/
 ├── DuckSettings.qml   # settings page
 ├── DuckStats.js       # pure stats logic (testable with node)
 ├── Birds.js           # the bird list (dropdown, scroll wheel, random bird)
+├── Input.js           # pure mouse-input logic (wheel steps, combos)
 ├── ConfirmButton.qml  # click-twice confirmation button
 ├── tests/             # node unit tests: for f in tests/*.test.js; do node $f; done
 ├── dev.sh             # dev helper (link / reload / status / release)

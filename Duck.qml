@@ -4,6 +4,8 @@ import qs.Services
 import qs.Widgets
 import qs.Modules.Plugins
 import "DuckStats.js" as Stats
+import "Birds.js" as Birds
+import "Input.js" as Input
 
 PluginComponent {
     id: root
@@ -18,6 +20,7 @@ PluginComponent {
     property var quackPhrases: (pluginData.quackPhrases || []).map(p => p.text).filter(t => t)
     property bool showCounter: pluginData.showCounter ?? false
     property string achievementToasts: pluginData.achievementToasts || "grouped"
+    property bool scrollChangesBird: pluginData.scrollChangesBird ?? true
 
     property bool quacking: false
     property string currentQuack: quackText
@@ -42,6 +45,24 @@ PluginComponent {
             ToastService.showInfo(duckEmoji + " " + currentQuack)
         if (hoveredPill)
             showTooltip(hoveredPill) // refresh the numbers
+    }
+
+    // The widget writes its own setting: savePluginData() notifies every
+    // Duck instance and the settings page, exactly like the dropdown does.
+    function setBird(emoji) {
+        if (pluginService && emoji !== duckEmoji)
+            pluginService.savePluginData(stateId, "duckEmoji", emoji)
+    }
+
+    // ── Scroll wheel ──────────────────────────────────────
+
+    property real wheelAcc: 0
+
+    function handleWheel(delta) {
+        const r = Input.wheelSteps(wheelAcc, delta)
+        wheelAcc = r.acc
+        if (r.steps !== 0)
+            setBird(Birds.next(duckEmoji, -r.steps)) // wheel down = next bird
     }
 
     // ── Stats (plugin state, not settings) ────────────────
@@ -79,7 +100,7 @@ PluginComponent {
         return text
     }
 
-    Component.onCompleted: loadStats()
+    Component.onCompleted: { console.warn("PROBE-V3 jsMarker=" + (typeof Stats.probeMarker)); loadStats() }
     onPluginServiceChanged: loadStats()
 
     // Another Duck instance (other bar/monitor) or the settings page changed
@@ -175,6 +196,11 @@ PluginComponent {
                 hoverEnabled: true
                 acceptedButtons: Qt.NoButton // clicks fall through to DMS's pill
                 cursorShape: Qt.PointingHandCursor
+                onWheel: wheel => {
+                    wheel.accepted = root.scrollChangesBird
+                    if (root.scrollChangesBird)
+                        root.handleWheel(wheel.angleDelta.y || wheel.angleDelta.x)
+                }
                 onEntered: {
                     root.hoveredPill = parent
                     root.showTooltip(parent)
@@ -224,6 +250,11 @@ PluginComponent {
                 hoverEnabled: true
                 acceptedButtons: Qt.NoButton // clicks fall through to DMS's pill
                 cursorShape: Qt.PointingHandCursor
+                onWheel: wheel => {
+                    wheel.accepted = root.scrollChangesBird
+                    if (root.scrollChangesBird)
+                        root.handleWheel(wheel.angleDelta.y || wheel.angleDelta.x)
+                }
                 onEntered: {
                     root.hoveredPill = parent
                     root.showTooltip(parent)

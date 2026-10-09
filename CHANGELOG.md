@@ -8,6 +8,9 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Added
+- Scroll over the duck to switch birds ("Scroll to change bird" setting, on by default). Works with touchpads too.
+
 ### Fixed
 - Clicking the pill's padding now quacks too, and clicks show the DMS ripple effect like other bar widgets.
 

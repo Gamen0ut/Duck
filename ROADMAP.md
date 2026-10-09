@@ -115,7 +115,7 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 ## 0.5.0 — Interaction
 
 - [ ] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `MouseArea.acceptedButtons`
-- [ ] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`
+- [x] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`, accumulating touchpad deltas, a widget writing its own setting (`savePluginData`)
 - [x] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
 - [ ] 🟡 **Double-click** = "QUACK QUACK" combo. *Learns:* click timing, gesture disambiguation
 - [ ] 🟢 **Toast levels**: info / warning / error depending on mood. *Learns:* `ToastService` variants
@@ -208,5 +208,6 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **Only `var` is exported from a JS library**: QML sees `Stats.ACHIEVEMENTS` only if it's declared with `var`, not `const`/`let`.
 - **Keep logic in a `.pragma library` JS file** to unit-test it with `node`: see `tests/DuckStats.test.js` (strips the pragma, evaluates in a `vm` sandbox; compare results as plain JSON).
 - **Use the pill's own clicks**: `BasePill` already has a MouseArea over the whole pill (padding included) with the ripple effect, handling left and right press. Plug into it with `pillClickAction` / `pillRightClickAction` instead of adding your own MouseArea on top, which hides the ripple and leaves the padding dead. It doesn't handle middle-click or the wheel, so for those keep a MouseArea with `acceptedButtons` set to only what you handle; other buttons fall through to the pill.
+- **Wheel deltas**: a mouse notch is `angleDelta` 120, but touchpads send many small deltas. Accumulate and step once per 120, or a touchpad flips through everything.
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.5–0.10.
