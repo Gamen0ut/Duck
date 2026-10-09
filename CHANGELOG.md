@@ -10,6 +10,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ### Added
 - Scroll over the duck to switch birds ("Scroll to change bird" setting, on by default). Works with touchpads too.
+- Right-click and middle-click actions, configurable in a new Mouse section: silent quack (default for right-click), random bird (default for middle-click), show stats, or nothing.
 
 ### Fixed
 - Clicking the pill's padding now quacks too, and clicks show the DMS ripple effect like other bar widgets.

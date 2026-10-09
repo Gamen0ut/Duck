@@ -21,6 +21,8 @@ PluginComponent {
     property bool showCounter: pluginData.showCounter ?? false
     property string achievementToasts: pluginData.achievementToasts || "grouped"
     property bool scrollChangesBird: pluginData.scrollChangesBird ?? true
+    property string rightClickAction: pluginData.rightClickAction || "silent"
+    property string middleClickAction: pluginData.middleClickAction || "randomBird"
 
     property bool quacking: false
     property string currentQuack: quackText
@@ -29,6 +31,22 @@ PluginComponent {
     // Clicks go through DMS's own pill MouseArea (whole pill incl. padding,
     // with the ripple effect) instead of a MouseArea of ours.
     pillClickAction: () => quack()
+    pillRightClickAction: () => runAction(rightClickAction)
+
+    // Actions for right-/middle-click (see Input.CLICK_ACTIONS).
+    function runAction(action) {
+        switch (action) {
+        case "silent":
+            quack(true)
+            break
+        case "randomBird":
+            setBird(Birds.random(duckEmoji))
+            break
+        case "stats":
+            ToastService.showInfo(tooltipText())
+            break
+        }
+    }
 
     function pickQuack() {
         if (randomQuack && quackPhrases.length > 0)
@@ -36,12 +54,12 @@ PluginComponent {
         return quackText
     }
 
-    function quack() {
+    function quack(silent) {
         currentQuack = pickQuack()
         quacking = true
         resetTimer.restart()
         recordQuack()
-        if (showToast)
+        if (showToast && !silent)
             ToastService.showInfo(duckEmoji + " " + currentQuack)
         if (hoveredPill)
             showTooltip(hoveredPill) // refresh the numbers
@@ -100,7 +118,7 @@ PluginComponent {
         return text
     }
 
-    Component.onCompleted: { console.warn("PROBE-V3 jsMarker=" + (typeof Stats.probeMarker)); loadStats() }
+    Component.onCompleted: loadStats()
     onPluginServiceChanged: loadStats()
 
     // Another Duck instance (other bar/monitor) or the settings page changed
@@ -194,8 +212,10 @@ PluginComponent {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
-                acceptedButtons: Qt.NoButton // clicks fall through to DMS's pill
+                // Only the middle button: left/right fall through to DMS's pill.
+                acceptedButtons: Qt.MiddleButton
                 cursorShape: Qt.PointingHandCursor
+                onClicked: root.runAction(root.middleClickAction)
                 onWheel: wheel => {
                     wheel.accepted = root.scrollChangesBird
                     if (root.scrollChangesBird)
@@ -248,8 +268,10 @@ PluginComponent {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
-                acceptedButtons: Qt.NoButton // clicks fall through to DMS's pill
+                // Only the middle button: left/right fall through to DMS's pill.
+                acceptedButtons: Qt.MiddleButton
                 cursorShape: Qt.PointingHandCursor
+                onClicked: root.runAction(root.middleClickAction)
                 onWheel: wheel => {
                     wheel.accepted = root.scrollChangesBird
                     if (root.scrollChangesBird)

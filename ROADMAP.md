@@ -114,7 +114,7 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 
 ## 0.5.0 — Interaction
 
-- [ ] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `MouseArea.acceptedButtons`
+- [x] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `pillRightClickAction`, `MouseArea.acceptedButtons` (middle only, the rest falls through), one action list shared by two settings
 - [x] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`, accumulating touchpad deltas, a widget writing its own setting (`savePluginData`)
 - [x] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
 - [ ] 🟡 **Double-click** = "QUACK QUACK" combo. *Learns:* click timing, gesture disambiguation

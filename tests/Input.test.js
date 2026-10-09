@@ -1,5 +1,5 @@
 // Unit tests for Input.js. Run: node tests/Input.test.js
-const {load, same, test} = require("./lib")
+const {assert, load, same, test} = require("./lib")
 const I = load("Input.js")
 
 test("one mouse-wheel notch is one step, either direction", () => {
@@ -20,4 +20,9 @@ test("small touchpad deltas add up to one step", () => {
 
 test("changing direction cancels the partial delta", () => {
     same(I.wheelSteps(90, -100), {acc: -10, steps: 0})
+})
+
+test("click actions have unique values", () => {
+    const values = I.CLICK_ACTIONS.map(a => a.value)
+    assert.strictEqual(new Set(values).size, values.length)
 })
