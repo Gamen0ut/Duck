@@ -122,7 +122,7 @@ PluginComponent {
     function recordQuack() {
         const now = new Date()
         stats = Stats.record(stats, currentQuack, now)
-        const unlocked = Stats.newlyUnlocked(stats, now)
+        const unlocked = Stats.newlyUnlocked(stats, now, {combo: combo})
         if (unlocked.length > 0) {
             stats = Stats.unlock(stats, unlocked, now)
             for (const t of Stats.unlockToasts(unlocked, achievementToasts))

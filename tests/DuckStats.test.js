@@ -165,6 +165,16 @@ test("achievement toast modes: separate always splits, off shows nothing", () =>
     same(S.unlockToasts(three, "off"), [])
 })
 
+test("combo achievements use the click context, and need no context otherwise", () => {
+    const now = d("2026-03-03")
+    const s = S.unlock(S.record(S.normalize(null), "q", now), [S.ACHIEVEMENTS[0]], now)
+    const at = combo => ids(S.newlyUnlocked(S.record(s, "q", now), now, {combo: combo}))
+    same(at(9), [])
+    same(at(10), ["combo10"])
+    same(at(25), ["combo10", "combo25"])
+    same(ids(S.newlyUnlocked(S.record(s, "q", now), now)), [], "no ctx = no combo")
+})
+
 test("achievement ids are unique", () => {
     const all = ids(S.ACHIEVEMENTS)
     assert.strictEqual(new Set(all).size, all.length)

@@ -12,6 +12,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Scroll over the duck to switch birds ("Scroll to change bird" setting, on by default). Works with touchpads too.
 - Right-click and middle-click actions, configurable in a new Mouse section: silent quack (default for right-click), random bird (default for middle-click), show stats, or nothing.
 - Combos: rapid clicks (within 0.5 s) show "Quack! ×3". Only the first click of a combo gets a toast; ×10 brings a warning toast and ×25 an error toast.
+- 2 combo achievements: 🌀 Combo breaker (×10) and 💥 Overquacked (×25).
 
 ### Fixed
 - Clicking the pill's padding now quacks too, and clicks show the DMS ripple effect like other bar widgets.

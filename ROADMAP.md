@@ -87,7 +87,6 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 
 ### Speed & behavior
 
-- [ ] 🟡 ⚡ **Quack storm**: 10 quacks in 5 seconds. *Needs:* timestamps of recent quacks (in memory only, no need to persist)
 - [ ] 🟡 🐢 **Patience**: quack after not quacking for 7 days. *Needs:* `lastQuackAt` timestamp
 - [ ] 🟡 🔄 **Prodigal duck**: come back after a 30-day break
 - [ ] 🟡 🖥️ **Multi-monitor duck**: quack from two different bars/screens. *Learns:* `parentScreen.name`, multiple instances
@@ -112,13 +111,14 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [ ] 🟡 **Unlock sound / animation** (pairs with 0.7.0 & 0.8.0)
 - [ ] 🟢 **Export / import stats** as JSON. *Learns:* `FileView`, clipboard
 
-## 0.5.0 — Interaction
+## 0.5.0 — Interaction ✅
 
 - [x] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `pillRightClickAction`, `MouseArea.acceptedButtons` (middle only, the rest falls through), one action list shared by two settings
 - [x] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`, accumulating touchpad deltas, a widget writing its own setting (`savePluginData`)
 - [x] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
 - [x] 🟡 **Combo** instead of double-click: rapid clicks show "Quack! ×3". *Learns:* click timing; why a real double-click (which delays every single click) is worse here
 - [x] 🟢 **Toast levels**: warning at combo ×10, error at ×25. *Learns:* `ToastService.showWarning` / `showError`
+- [x] 🟢 🌀💥 **Combo achievements** (×10, ×25). *Learns:* passing click context to achievement checks (`test(summary, now, ctx)`), additive again
 
 ## 0.6.0 — Popout
 

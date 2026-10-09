@@ -6,7 +6,8 @@
 
 const KEEP_DAYS = 90 // per-day history older than this is dropped
 
-// `test(summary, now)` receives summary(stats, now) and the Date of the quack.
+// `test(summary, now, ctx)` receives summary(stats, now), the Date of the
+// quack and the click context ({combo}; tests may omit it).
 // `hidden: true` = secret: settings shows "???" until it's unlocked.
 // `meta: true` = unlocked when every non-meta achievement is (no `test`). `var`, not `const`: only `var` is
 // visible from QML as Stats.ACHIEVEMENTS.
@@ -27,6 +28,9 @@ var ACHIEVEMENTS = [
     {id: "streak7",  icon: "🏆", name: "Weekly waddle",     description: "Quack 7 days in a row",      test: s => s.streak >= 7},
     {id: "streak14", icon: "📅", name: "Fortnight flock",   description: "Quack 14 days in a row",     test: s => s.streak >= 14},
     {id: "streak30", icon: "🗓️", name: "Monthly migration", description: "Quack 30 days in a row",     test: s => s.streak >= 30},
+    // Combos (ctx.combo: rapid clicks, see Input.js)
+    {id: "combo10",  icon: "🌀", name: "Combo breaker",     description: "Reach a ×10 combo",          test: (s, now, ctx) => ctx.combo >= 10},
+    {id: "combo25",  icon: "💥", name: "Overquacked",       description: "Reach a ×25 combo",          test: (s, now, ctx) => ctx.combo >= 25},
     // Time of day
     {id: "nightOwl", icon: "🦉", name: "Night owl",         description: "Quack between 00:00 and 04:00", test: (s, now) => now.getHours() < 4},
     {id: "earlyBird", icon: "🐓", name: "Early bird",       description: "Quack between 05:00 and 07:00", test: (s, now) => now.getHours() >= 5 && now.getHours() < 7},
@@ -128,10 +132,11 @@ function record(stats, text, now) {
 // Achievements whose condition is now met but that aren't unlocked yet.
 // Meta achievements are checked last, counting what this quack unlocks, so
 // Completionist arrives together with the last missing achievement.
-function newlyUnlocked(stats, now) {
+function newlyUnlocked(stats, now, ctx) {
     const sum = summary(stats, now)
+    const context = ctx || {combo: 1}
     const isNew = a => stats.achievements.indexOf(a.id) === -1
-    const found = ACHIEVEMENTS.filter(a => !a.meta && isNew(a) && a.test(sum, now))
+    const found = ACHIEVEMENTS.filter(a => !a.meta && isNew(a) && a.test(sum, now, context))
     const have = stats.achievements.concat(found.map(a => a.id))
     const allDone = ACHIEVEMENTS.every(a => a.meta || have.indexOf(a.id) !== -1)
     return found.concat(ACHIEVEMENTS.filter(a => a.meta && isNew(a) && allDone))
