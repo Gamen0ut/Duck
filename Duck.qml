@@ -395,7 +395,7 @@ PluginComponent {
                         id: bigDuck
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: root.duckEmoji
-                        font.pixelSize: 72
+                        font.pixelSize: Theme.fontSizeXLarge * 3.6
                     }
                     StyledText {
                         id: quackLine
@@ -429,7 +429,7 @@ PluginComponent {
 
                         Column {
                             required property var modelData
-                            spacing: 2
+                            spacing: Theme.spacingXXS
 
                             StyledText {
                                 anchors.horizontalCenter: parent.horizontalCenter

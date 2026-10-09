@@ -47,7 +47,7 @@ Rectangle {
             StyledText {
                 id: bird
                 text: swimmer.index === 0 ? pond.mainBird : Birds.next(pond.mainBird, swimmer.index)
-                font.pixelSize: 28
+                font.pixelSize: Theme.fontSizeXLarge * 1.4
                 // emojis face left: mirror them while swimming right
                 transform: Scale {
                     origin.x: bird.width / 2
