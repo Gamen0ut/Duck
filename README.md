@@ -23,9 +23,18 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 
 ## Screenshots
 
-| Pond & feeding | History | Achievements |
-|:---:|:---:|:---:|
-| <img src="screenshots/popout-feed.png" width="230" alt="Popout after feeding: the duck says Nom nom"> | <img src="screenshots/popout-history.png" width="230" alt="History tab with grouped combos"> | <img src="screenshots/popout-achievements.png" width="230" alt="Achievements tab with unlock dates"> |
+<table>
+  <tr>
+    <th>Feeding (with the bar)</th>
+    <th>History</th>
+    <th>Achievements</th>
+  </tr>
+  <tr>
+    <td valign="top"><img src="screenshots/popout-feed.png" width="250" alt="The pill and the popout after feeding: the duck says Nom nom"></td>
+    <td valign="top"><img src="screenshots/popout-history.png" width="250" alt="History tab with grouped combos"></td>
+    <td valign="top"><img src="screenshots/popout-achievements.png" width="250" alt="Achievements tab with unlock dates"></td>
+  </tr>
+</table>
 
 **In the bar**: quacking, and the hover tooltip
 
@@ -40,9 +49,18 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 <details>
 <summary><b>Settings page</b></summary>
 
-<img src="screenshots/settings-1.png" width="400" alt="Settings: look and quack">
-<img src="screenshots/settings-2.png" width="400" alt="Settings: mouse and notifications">
-<img src="screenshots/settings-3.png" width="400" alt="Settings: stats, achievements and reset">
+<table>
+  <tr>
+    <th>Look & quack</th>
+    <th>Mouse & notifications</th>
+    <th>Stats & reset</th>
+  </tr>
+  <tr>
+    <td valign="top"><img src="screenshots/settings-1.png" width="260" alt="Settings: look and quack"></td>
+    <td valign="top"><img src="screenshots/settings-2.png" width="260" alt="Settings: mouse and notifications"></td>
+    <td valign="top"><img src="screenshots/settings-3.png" width="260" alt="Settings: stats, achievements and reset"></td>
+  </tr>
+</table>
 
 </details>
 
