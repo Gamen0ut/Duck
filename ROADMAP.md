@@ -30,10 +30,10 @@ Try every settings widget DMS offers.
 - [x] 🟢 **Reset to defaults** button with click-twice confirmation. *Learns:* `DankButton`, iterating `PluginSettings.content`, `saveValue`
 - [x] 🟡 **Settings sections** with headers and descriptions. *Learns:* settings page layout, `StyledText`, spacing tokens
 
-## 0.3.0 — State & persistence
+## 0.3.0 — State & persistence ✅
 
 - [x] 🟢 **Quack counter** shown in the pill or tooltip. *Learns:* `savePluginState` / `loadPluginState`, `pluginStateChanged`, `DankTooltip`
-- [ ] 🟢 **Reset counter** button in settings. *Learns:* writing data from the settings page
+- [x] 🟢 **Reset counter** button in settings. *Learns:* reading/clearing plugin state from the settings page, `clearPluginState`
 - [x] 🟡 **Daily stats**: quacks per day, current streak. *Learns:* storing structured JSON, dates (local-time day keys, pruning old days)
 - [x] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
 - [x] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
