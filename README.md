@@ -26,7 +26,7 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 ```bash
 git clone https://github.com/Gamen0ut/Duck.git
 cd Duck
-./dev.sh install   # copies the plugin into ~/.config/DankMaterialShell/plugins/Duck
+./dev.sh link      # symlinks this folder into ~/.config/DankMaterialShell/plugins/Duck
 ```
 
 Then in DMS: **Settings → Plugins → Scan for plugins**, enable **Duck**, and add it to a bar section.
@@ -53,8 +53,8 @@ Download `Duck-vX.Y.Z.zip` from [Releases](https://github.com/Gamen0ut/Duck/rele
 ## Development
 
 ```bash
-./dev.sh install   # copy the plugin into the DMS plugins folder
-./dev.sh reload    # copy again + hot-reload after editing
+./dev.sh link      # symlink the plugin into the DMS plugins folder
+./dev.sh reload    # hot-reload the plugin after editing QML
 ./dev.sh status    # check whether the plugin is loaded
 ```
 
@@ -67,7 +67,7 @@ Duck/
 ├── DuckSettings.qml   # settings page
 ├── DuckStats.js       # pure stats logic (testable with node)
 ├── ConfirmButton.qml  # click-twice confirmation button
-├── dev.sh             # dev helper (install / reload / status / release)
+├── dev.sh             # dev helper (link / reload / status / release)
 ├── CHANGELOG.md
 └── ROADMAP.md
 ```
