@@ -172,6 +172,8 @@ test("combo achievements use the click context, and need no context otherwise", 
     same(at(9), [])
     same(at(10), ["combo10"])
     same(at(25), ["combo10", "combo25"])
+    same(at(99), ["combo10", "combo25"])
+    same(at(100), ["combo10", "combo25", "combo100"])
     same(ids(S.newlyUnlocked(S.record(s, "q", now), now)), [], "no ctx = no combo")
 })
 

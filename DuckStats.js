@@ -31,6 +31,7 @@ var ACHIEVEMENTS = [
     // Combos (ctx.combo: rapid clicks, see Input.js)
     {id: "combo10",  icon: "🌀", name: "Combo breaker",     description: "Reach a ×10 combo",          test: (s, now, ctx) => ctx.combo >= 10},
     {id: "combo25",  icon: "💥", name: "Overquacked",       description: "Reach a ×25 combo",          test: (s, now, ctx) => ctx.combo >= 25},
+    {id: "combo100", icon: "☄️", name: "Quackpocalypse",    description: "Reach a ×100 combo",         test: (s, now, ctx) => ctx.combo >= 100},
     // Time of day
     {id: "nightOwl", icon: "🦉", name: "Night owl",         description: "Quack between 00:00 and 04:00", test: (s, now) => now.getHours() < 4},
     {id: "earlyBird", icon: "🐓", name: "Early bird",       description: "Quack between 05:00 and 07:00", test: (s, now) => now.getHours() >= 5 && now.getHours() < 7},

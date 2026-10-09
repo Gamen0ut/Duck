@@ -118,7 +118,7 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [x] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
 - [x] 🟡 **Combo** instead of double-click: rapid clicks show "Quack! ×3". *Learns:* click timing; why a real double-click (which delays every single click) is worse here
 - [x] 🟢 **Toast levels**: warning at combo ×10, error at ×25. *Learns:* `ToastService.showWarning` / `showError`
-- [x] 🟢 🌀💥 **Combo achievements** (×10, ×25). *Learns:* passing click context to achievement checks (`test(summary, now, ctx)`), additive again
+- [x] 🟢 🌀💥☄️ **Combo achievements** (×10, ×25, ×100). *Learns:* passing click context to achievement checks (`test(summary, now, ctx)`), additive again
 
 ## 0.6.0 — Popout
 
