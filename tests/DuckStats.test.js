@@ -1,29 +1,9 @@
 // Unit tests for DuckStats.js. Run: node tests/DuckStats.test.js
-// DuckStats.js is a QML JS library, so strip `.pragma library` and evaluate
-// it in a sandbox to get its functions.
-const assert = require("assert")
-const fs = require("fs")
-const path = require("path")
-const vm = require("vm")
-
-const source = fs.readFileSync(path.join(__dirname, "..", "DuckStats.js"), "utf8")
-    .replace(/^\.pragma library$/m, "")
-const S = {}
-vm.runInNewContext(source + "\nObject.assign(exports, {emptyStats, normalize, dayKey, streak, summary, record, newlyUnlocked, unlock, unlockToasts, ACHIEVEMENTS})", {exports: S})
+const {assert, load, same, test} = require("./lib")
+const S = load("DuckStats.js")
 
 const d = s => new Date(s + "T12:00:00")
 const ids = list => list.map(a => a.id)
-// Objects from the sandbox have their own Object prototype, so compare them
-// as plain JSON values.
-const plain = x => JSON.parse(JSON.stringify(x))
-const same = (actual, expected) => assert.deepStrictEqual(plain(actual), plain(expected))
-
-let passed = 0
-function test(name, fn) {
-    fn()
-    passed++
-    console.log("ok -", name)
-}
 
 test("dayKey uses local time and zero-pads", () => {
     assert.strictEqual(S.dayKey(new Date(2026, 0, 5)), "2026-01-05")
@@ -190,4 +170,3 @@ test("achievement ids are unique", () => {
     assert.strictEqual(new Set(all).size, all.length)
 })
 
-console.log(`\n${passed} tests passed`)

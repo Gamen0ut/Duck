@@ -23,4 +23,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unit tests
-        run: node tests/DuckStats.test.js
+        run: for f in tests/*.test.js; do echo "== $f"; node "$f" || exit 1; done
