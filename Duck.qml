@@ -352,10 +352,11 @@ PluginComponent {
 
             // Tabs are identified by id, so adding one doesn't shift the others.
             readonly property var tabs: [
+                {id: "pond", label: "Pond"},
                 {id: "history", label: "History"},
                 {id: "achievements", label: "Achievements"}
             ]
-            property string tab: "history"
+            property string tab: "pond"
 
             function timeLabel(ms) {
                 const d = new Date(ms)
@@ -449,6 +450,15 @@ PluginComponent {
                 Item {
                     width: parent.width
                     height: 260
+
+                    // One bird per quack today (at least 1, at most 12)
+                    Pond {
+                        anchors.fill: parent
+                        visible: popout.tab === "pond"
+                        count: Math.max(1, Math.min(12, popout.summary.today))
+                        mainBird: root.duckEmoji
+                        onBirdClicked: root.quack()
+                    }
 
                     DankListView {
                         anchors.fill: parent

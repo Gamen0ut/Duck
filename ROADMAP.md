@@ -123,7 +123,7 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 
 - [x] 🟡 **Achievements tab** in the popout (reuses `AchievementList.qml`). *Learns:* tabs with `DankButtonGroup`, scrolling with `DankFlickable`
 - [x] 🟡 **Popout window** (right-click by default) with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
-- [ ] 🟡 **Pond view**: several ducks swimming in the popout. *Learns:* QML layouts in popouts
+- [x] 🟡 **Pond view**: one swimming bird per quack today. *Learns:* `Repeater`, looping `SequentialAnimation`, mirroring with `Scale`, pausing animations when hidden
 - [x] 🟡 **Quack history** list in the popout. *Learns:* `DankListView` with a JS array model, additive `history` data, merging combo entries
 - [ ] 🟢 **Buttons in the popout** (feed the duck, reset). *Learns:* DMS button widgets, closing the popout from code
 
@@ -212,5 +212,6 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **Combos beat double-clicks**: a double-click handler must wait (~250 ms) after every click to see if a second one follows, so single clicks feel laggy. Counting rapid clicks with timestamps reacts instantly, and a pure `nextCombo(combo, lastMs, nowMs)` is trivial to test.
 - **`capabilities` is required** by DMS's `plugin-schema.json` (and for publishing), even though plugins load without it. It's a free-form list; bar widgets use `["dankbar-widget"]`. CI now checks every schema-required field.
 - **`pillClickAction` overrides the popout**: with a click action set, DMS never opens the plugin's popout, and `triggerPopout()` runs the click action instead. To open it from another button, clear `pillClickAction`, call `triggerPopout()`, then restore it (assigned imperatively, not as a binding). The popout sizes itself to the content's `implicitHeight`.
+- **Looping animations read their targets when a loop starts**: don't make `to:` depend on state the loop itself flips. Use fixed legs (there, turn, back, turn), and wait for a non-zero size before `running`.
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.5–0.10.

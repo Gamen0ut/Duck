@@ -79,6 +79,7 @@ Duck/
 ├── Input.js           # pure mouse-input logic (wheel steps, combos)
 ├── ConfirmButton.qml  # click-twice confirmation button
 ├── AchievementList.qml # achievement list (settings + popout)
+├── Pond.qml           # the popout's animated pond
 ├── tests/             # node unit tests: for f in tests/*.test.js; do node $f; done
 ├── dev.sh             # dev helper (link / reload / status / release)
 ├── CHANGELOG.md

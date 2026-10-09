@@ -10,6 +10,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ### Added
 - Popout window: a big duck you can click (combos too) and your stats at a glance.
+- Pond tab (the default): one swimming bird per quack today, up to 12. Click one to quack.
 - Achievements tab in the popout.
 - History tab: your last 20 quacks with their time; combos are grouped ("Quack! ×12").
 - "Left-click" setting: quack (default) or open the popout. "Open popout" is also available for right- and middle-click.
