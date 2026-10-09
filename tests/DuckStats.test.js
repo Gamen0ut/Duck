@@ -177,6 +177,27 @@ test("combo achievements use the click context, and need no context otherwise", 
     same(ids(S.newlyUnlocked(S.record(s, "q", now), now)), [], "no ctx = no combo")
 })
 
+test("history: newest first, rapid same-text quacks merge, capped at 20", () => {
+    const at = sec => new Date(2026, 2, 3, 12, 0, sec)
+    let s = S.normalize(null)
+    s = S.record(s, "Quack!", at(0))
+    s = S.record(s, "Quack!", at(1))   // 1 s later, same text: merged
+    s = S.record(s, "Quack!", at(3))   // 2 s after the previous one: still merged
+    s = S.record(s, "Hi", at(4))       // other text: new entry
+    s = S.record(s, "Hi", at(10))      // 6 s later: new entry
+    same(s.history.map(h => h.text + "×" + h.count), ["Hi×1", "Hi×1", "Quack!×3"])
+    for (let i = 0; i < 30; i++)
+        s = S.record(s, "q" + i, at(20 + i * 5))
+    assert.strictEqual(s.history.length, 20)
+    assert.strictEqual(s.history[0].text, "q29")
+})
+
+test("history: old saves load with an empty history, bad entries are dropped", () => {
+    same(S.normalize({total: 5}).history, [])
+    same(S.normalize({history: [{text: "ok", at: 1}, {text: 3, at: 1}, null]}).history,
+         [{text: "ok", at: 1, last: 1, count: 1}])
+})
+
 test("achievement ids are unique", () => {
     const all = ids(S.ACHIEVEMENTS)
     assert.strictEqual(new Set(all).size, all.length)

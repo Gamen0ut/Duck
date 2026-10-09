@@ -5,6 +5,8 @@
 // (pluginService.savePluginState("duck", "stats", ...)), not in settings.
 
 const KEEP_DAYS = 90 // per-day history older than this is dropped
+var HISTORY_SIZE = 20 // recent quacks kept for the popout's History tab
+var HISTORY_MERGE_MS = 2000 // same text this close together = one entry ×N
 
 // `test(summary, now, ctx)` receives summary(stats, now), the Date of the
 // quack and the click context ({combo}; tests may omit it).
@@ -55,6 +57,8 @@ function emptyStats() {
         total: 0,
         daily: {},          // { "2026-10-09": 12, ... } in local time
         lastQuack: "",
+        history: [],        // recent quacks, newest first: {text, at, last, count}
+                            // (added in 0.6.0; older saves start empty)
         achievements: [],   // ids of unlocked achievements
         unlockedAt: {}      // { id: ms timestamp }; added in 0.4.0, so older
                             // unlocks have no date (no migration needed)
@@ -73,6 +77,13 @@ function normalize(raw) {
             if (Number.isInteger(raw.daily[day]) && raw.daily[day] > 0)
                 s.daily[day] = raw.daily[day]
     s.lastQuack = typeof raw.lastQuack === "string" ? raw.lastQuack : ""
+    if (Array.isArray(raw.history))
+        s.history = raw.history
+            .filter(h => h && typeof h.text === "string" && Number.isFinite(h.at))
+            .map(h => ({text: h.text, at: h.at,
+                        last: Number.isFinite(h.last) ? h.last : h.at,
+                        count: Number.isInteger(h.count) && h.count > 0 ? h.count : 1}))
+            .slice(0, HISTORY_SIZE)
     if (Array.isArray(raw.achievements))
         s.achievements = raw.achievements.filter(id => ACHIEVEMENTS.some(a => a.id === id))
     if (raw.unlockedAt && typeof raw.unlockedAt === "object")
@@ -123,6 +134,17 @@ function record(stats, text, now) {
     s.total += 1
     s.daily[today] = (s.daily[today] || 0) + 1
     s.lastQuack = text
+    // Rapid quacks with the same text (combos) merge into one entry ×N, so a
+    // long combo doesn't push everything else out of the history.
+    const t = now.getTime()
+    const latest = s.history[0]
+    if (latest && latest.text === text && t - latest.last <= HISTORY_MERGE_MS) {
+        latest.count += 1
+        latest.last = t
+    } else {
+        s.history.unshift({text: text, at: t, last: t, count: 1})
+        s.history = s.history.slice(0, HISTORY_SIZE)
+    }
     const oldest = dayKey(addDays(now, -KEEP_DAYS))
     for (const day in s.daily)
         if (day < oldest)

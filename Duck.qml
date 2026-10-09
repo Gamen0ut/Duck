@@ -352,9 +352,16 @@ PluginComponent {
 
             // Tabs are identified by id, so adding one doesn't shift the others.
             readonly property var tabs: [
+                {id: "history", label: "History"},
                 {id: "achievements", label: "Achievements"}
             ]
-            property string tab: "achievements"
+            property string tab: "history"
+
+            function timeLabel(ms) {
+                const d = new Date(ms)
+                const sameDay = d.toDateString() === new Date().toDateString()
+                return Qt.formatDateTime(d, sameDay ? "HH:mm" : "d MMM HH:mm")
+            }
 
             Column {
                 width: parent.width
@@ -442,6 +449,42 @@ PluginComponent {
                 Item {
                     width: parent.width
                     height: 260
+
+                    DankListView {
+                        anchors.fill: parent
+                        visible: popout.tab === "history"
+                        clip: true
+                        spacing: Theme.spacingXS
+                        model: root.stats.history
+
+                        delegate: Row {
+                            required property var modelData
+                            width: ListView.view.width
+                            spacing: Theme.spacingS
+
+                            StyledText {
+                                width: 90
+                                text: popout.timeLabel(parent.modelData.at)
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                            StyledText {
+                                width: parent.width - 90 - parent.spacing
+                                text: parent.modelData.text + (parent.modelData.count > 1 ? "  ×" + parent.modelData.count : "")
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                elide: Text.ElideRight
+                            }
+                        }
+
+                        StyledText {
+                            anchors.centerIn: parent
+                            visible: root.stats.history.length === 0
+                            text: "No quacks yet. Click the duck!"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                        }
+                    }
 
                     DankFlickable {
                         anchors.fill: parent

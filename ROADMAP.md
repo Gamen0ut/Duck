@@ -124,7 +124,7 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [x] 🟡 **Achievements tab** in the popout (reuses `AchievementList.qml`). *Learns:* tabs with `DankButtonGroup`, scrolling with `DankFlickable`
 - [x] 🟡 **Popout window** (right-click by default) with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
 - [ ] 🟡 **Pond view**: several ducks swimming in the popout. *Learns:* QML layouts in popouts
-- [ ] 🟡 **Quack history** list in the popout. *Learns:* `ListView`, models, scrolling
+- [x] 🟡 **Quack history** list in the popout. *Learns:* `DankListView` with a JS array model, additive `history` data, merging combo entries
 - [ ] 🟢 **Buttons in the popout** (feed the duck, reset). *Learns:* DMS button widgets, closing the popout from code
 
 ## 0.7.0 — Animation & looks
