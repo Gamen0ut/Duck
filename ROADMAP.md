@@ -107,7 +107,6 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [ ] 🟡 **Evolution**: the bird evolves with level (🥚 → 🐣 → 🐥 → 🦆 → 🦢), unless a bird is picked in settings
 - [ ] 🟡 **Daily goal**: "Quack 10 times today", progress in the tooltip, small celebration toast
 - [ ] 🔴 **Weekly quests**: 3 random goals per week, rerolled every Monday. *Learns:* seeded randomness by week number
-- [ ] 🔴 **Achievement gallery** in the popout (pairs with 0.6.0)
 - [ ] 🟡 **Unlock sound / animation** (pairs with 0.7.0 & 0.8.0)
 - [ ] 🟢 **Export / import stats** as JSON. *Learns:* `FileView`, clipboard
 
@@ -122,6 +121,7 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 
 ## 0.6.0 — Popout
 
+- [x] 🟡 **Achievements tab** in the popout (reuses `AchievementList.qml`). *Learns:* tabs with `DankButtonGroup`, scrolling with `DankFlickable`
 - [x] 🟡 **Popout window** (right-click by default) with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
 - [ ] 🟡 **Pond view**: several ducks swimming in the popout. *Learns:* QML layouts in popouts
 - [ ] 🟡 **Quack history** list in the popout. *Learns:* `ListView`, models, scrolling

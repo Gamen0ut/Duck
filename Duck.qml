@@ -350,6 +350,12 @@ PluginComponent {
 
             readonly property var summary: Stats.summary(root.stats, new Date())
 
+            // Tabs are identified by id, so adding one doesn't shift the others.
+            readonly property var tabs: [
+                {id: "achievements", label: "Achievements"}
+            ]
+            property string tab: "achievements"
+
             Column {
                 width: parent.width
                 spacing: Theme.spacingM
@@ -414,6 +420,40 @@ PluginComponent {
                                 font.pixelSize: Theme.fontSizeSmall
                                 color: Theme.surfaceVariantText
                             }
+                        }
+                    }
+                }
+
+                DankButtonGroup {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: popout.tabs.length > 1
+                    buttonHeight: 32
+                    textSize: Theme.fontSizeSmall
+                    model: popout.tabs.map(t => t.label)
+                    currentIndex: popout.tabs.findIndex(t => t.id === popout.tab)
+                    selectionMode: "single"
+                    onSelectionChanged: (index, selected) => {
+                        if (selected)
+                            popout.tab = popout.tabs[index].id
+                    }
+                }
+
+                // Tab content: fixed height, each tab scrolls on its own
+                Item {
+                    width: parent.width
+                    height: 260
+
+                    DankFlickable {
+                        anchors.fill: parent
+                        visible: popout.tab === "achievements"
+                        clip: true
+                        contentWidth: width
+                        contentHeight: achievementList.implicitHeight
+
+                        AchievementList {
+                            id: achievementList
+                            width: parent.width
+                            stats: root.stats
                         }
                     }
                 }

@@ -10,6 +10,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ### Added
 - Popout window: a big duck you can click (combos too) and your stats at a glance.
+- Achievements tab in the popout.
 - "Left-click" setting: quack (default) or open the popout. "Open popout" is also available for right- and middle-click.
 
 ### Changed
