@@ -3,7 +3,7 @@
 A tiny [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell) bar widget: a duck that says **quack** when you click it.
 
 <p align="center">
-  <img src="screenshot.png" width="300" alt="Duck's popout: a big mallard, quack stats and a pond full of swimming birds">
+  <img src="screenshots/pond.gif" width="300" alt="Duck's popout: a big chick, quack stats and a pond of birds swimming back and forth">
 </p>
 
 Duck is a playground plugin: a place to try out the DMS plugin API before building bigger plugins. See [ROADMAP.md](ROADMAP.md) for what's planned.
@@ -109,7 +109,7 @@ Duck/
 ├── AchievementList.qml # achievement list (settings + popout)
 ├── Pond.qml           # the popout's animated pond
 ├── tests/             # node unit tests: for f in tests/*.test.js; do node $f; done
-├── screenshot.png     # main image (README, plugin registry)
+├── screenshot.png     # main still image (plugin registry)
 ├── screenshots/       # README images
 ├── dev.sh             # dev helper (link / reload / status / release)
 ├── CHANGELOG.md
