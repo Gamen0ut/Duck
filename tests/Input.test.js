@@ -26,3 +26,25 @@ test("click actions have unique values", () => {
     const values = I.CLICK_ACTIONS.map(a => a.value)
     assert.strictEqual(new Set(values).size, values.length)
 })
+
+test("clicks within 500 ms build a combo, a pause resets it", () => {
+    let combo = 0, last = 0
+    for (const t of [1000, 1300, 1790]) {
+        combo = I.nextCombo(combo, last, t)
+        last = t
+    }
+    assert.strictEqual(combo, 3)
+    assert.strictEqual(I.nextCombo(combo, last, last + 500), 4, "500 ms is still in")
+    assert.strictEqual(I.nextCombo(combo, last, last + 501), 1, "501 ms starts over")
+    assert.strictEqual(I.nextCombo(0, 0, 100), 1, "first click ever")
+})
+
+test("combo toasts only at ×10 (warning) and ×25 (error)", () => {
+    const levels = []
+    for (let c = 1; c <= 30; c++) {
+        const t = I.comboToast(c)
+        if (t)
+            levels.push(c + ":" + t.level)
+    }
+    same(levels, ["10:warning", "25:error"])
+})

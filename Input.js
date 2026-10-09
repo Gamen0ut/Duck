@@ -20,3 +20,24 @@ function wheelSteps(acc, delta) {
     const steps = Math.trunc(total / WHEEL_NOTCH)
     return {acc: total - steps * WHEEL_NOTCH, steps: steps}
 }
+
+// ── Combos ───────────────────────────────────────────────
+// Rapid clicks build a combo instead of using a classic double-click, which
+// would delay every single click while waiting for a possible second one.
+
+var COMBO_WINDOW_MS = 500 // max time between two clicks of the same combo
+
+// Combo count after a click at `now` (ms), given the previous click time.
+function nextCombo(combo, lastClickMs, now) {
+    return combo > 0 && now - lastClickMs <= COMBO_WINDOW_MS ? combo + 1 : 1
+}
+
+// Toast for combo milestones, or null. `level` matches ToastService:
+// "warning" -> showWarning, "error" -> showError.
+function comboToast(combo) {
+    if (combo === 10)
+        return {level: "warning", text: "😵 Quack ×10! The duck is getting dizzy…"}
+    if (combo === 25)
+        return {level: "error", text: "💥 Quack ×25! The duck needs a break!"}
+    return null
+}

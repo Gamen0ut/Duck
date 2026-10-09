@@ -9,6 +9,7 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 - Works in horizontal and vertical bars
 - Click the duck → it shows the quack text (duration is configurable)
 - Right-click / middle-click: silent quack, random bird or stats (configurable)
+- Click fast for combos: "Quack! ×3"… and see what happens at ×10 and ×25
 - Pick your bird: 🦆 🐤 🐥 🐣 🦢 (in settings, or scroll over the duck)
 - Custom quack color, or follow the theme accent
 - Random quacks from your own phrase list

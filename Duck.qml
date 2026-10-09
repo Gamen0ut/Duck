@@ -54,13 +54,36 @@ PluginComponent {
         return quackText
     }
 
+    // ── Combo ─────────────────────────────────────────────
+
+    property int combo: 0
+    property real lastClickMs: 0
+    readonly property string comboSuffix: combo > 1 ? " ×" + combo : ""
+
+    function showComboToast() {
+        const t = Input.comboToast(combo)
+        if (!t)
+            return
+        if (t.level === "error")
+            ToastService.showError(t.text)
+        else
+            ToastService.showWarning(t.text)
+    }
+
     function quack(silent) {
-        currentQuack = pickQuack()
+        const now = Date.now()
+        combo = Input.nextCombo(combo, lastClickMs, now)
+        lastClickMs = now
+        if (combo === 1)
+            currentQuack = pickQuack() // keep the same text during a combo
         quacking = true
         resetTimer.restart()
         recordQuack()
-        if (showToast && !silent)
-            ToastService.showInfo(duckEmoji + " " + currentQuack)
+        if (showToast && !silent) {
+            if (combo === 1)
+                ToastService.showInfo(duckEmoji + " " + currentQuack)
+            showComboToast()
+        }
         if (hoveredPill)
             showTooltip(hoveredPill) // refresh the numbers
     }
@@ -201,7 +224,7 @@ PluginComponent {
                 }
                 StyledText {
                     visible: root.quacking
-                    text: root.currentQuack
+                    text: root.currentQuack + root.comboSuffix
                     font.pixelSize: Theme.fontSizeMedium
                     font.weight: Font.Bold
                     color: root.quackColor
@@ -257,7 +280,7 @@ PluginComponent {
                 }
                 StyledText {
                     visible: root.quacking
-                    text: "Q!"
+                    text: root.combo > 1 ? "×" + root.combo : "Q!"
                     font.pixelSize: Theme.fontSizeSmall
                     font.weight: Font.Bold
                     color: root.quackColor
