@@ -8,6 +8,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-09
+
 ### Added
 - Quack statistics: total, today and day streak, saved across restarts.
 - Hover tooltip on the duck with your quack stats.
@@ -36,6 +38,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Settings: custom quack text, toast toggle.
 - `dev.sh` helper to link, reload and check the plugin status.
 
-[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/Gamen0ut/Duck/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Gamen0ut/Duck/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Gamen0ut/Duck/releases/tag/v0.1.0
