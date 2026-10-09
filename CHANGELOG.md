@@ -10,6 +10,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ### Added
 - 6 new milestone and streak achievements: 🎲 The answer (42), 😈 Devil's quack (666), 🕶️ Leet quacker (1337), 🌪️ Quack frenzy (100 in one day), 📅 Fortnight flock (14-day streak), 🗓️ Monthly migration (30-day streak).
+- 7 time and calendar achievements: 🦉 Night owl, 🐓 Early bird, 🎆 Happy new quack, 💘 Love quack, 🐸 Leap duck, 🎃 Spooky quack, 🎄 Jingle quack.
 
 ## [0.3.0] - 2026-10-09
 

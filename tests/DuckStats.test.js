@@ -110,6 +110,35 @@ test("14- and 30-day streaks unlock on the right day", () => {
     assert.ok(s30.achievements.includes("streak30"))
 })
 
+// One quack at an exact local date and time; returns the ids it unlocks.
+function quackAt(year, month, day, hour, minute) {
+    const now = new Date(year, month - 1, day, hour, minute || 0)
+    return ids(S.newlyUnlocked(S.record(S.normalize(null), "q", now), now))
+}
+
+test("Night owl: 00:00 to 03:59 only", () => {
+    assert.ok(quackAt(2026, 3, 3, 0, 0).includes("nightOwl"))
+    assert.ok(quackAt(2026, 3, 3, 3, 59).includes("nightOwl"))
+    assert.ok(!quackAt(2026, 3, 3, 4, 0).includes("nightOwl"))
+    assert.ok(!quackAt(2026, 3, 3, 23, 59).includes("nightOwl"))
+})
+
+test("Early bird: 05:00 to 06:59 only", () => {
+    assert.ok(!quackAt(2026, 3, 3, 4, 59).includes("earlyBird"))
+    assert.ok(quackAt(2026, 3, 3, 5, 0).includes("earlyBird"))
+    assert.ok(quackAt(2026, 3, 3, 6, 59).includes("earlyBird"))
+    assert.ok(!quackAt(2026, 3, 3, 7, 0).includes("earlyBird"))
+})
+
+test("calendar achievements unlock on their day and not the day before", () => {
+    for (const [id, y, m, day] of [["newYear", 2027, 1, 1], ["valentine", 2027, 2, 14], ["leapDay", 2028, 2, 29],
+                                   ["halloween", 2026, 10, 31], ["christmas", 2026, 12, 25]]) {
+        assert.ok(quackAt(y, m, day, 12).includes(id), id + " not unlocked on its day")
+        const before = new Date(y, m - 1, day - 1, 12)
+        assert.ok(!quackAt(before.getFullYear(), before.getMonth() + 1, before.getDate(), 12).includes(id), id + " unlocked a day early")
+    }
+})
+
 test("achievement ids are unique", () => {
     const all = ids(S.ACHIEVEMENTS)
     assert.strictEqual(new Set(all).size, all.length)

@@ -6,7 +6,7 @@
 
 const KEEP_DAYS = 90 // per-day history older than this is dropped
 
-// `test` receives summary(stats, now). `var`, not `const`: only `var` is
+// `test(summary, now)` receives summary(stats, now) and the Date of the quack. `var`, not `const`: only `var` is
 // visible from QML as Stats.ACHIEVEMENTS.
 var ACHIEVEMENTS = [
     // Milestones
@@ -24,8 +24,22 @@ var ACHIEVEMENTS = [
     {id: "streak3",  icon: "🔥", name: "On a roll",         description: "Quack 3 days in a row",      test: s => s.streak >= 3},
     {id: "streak7",  icon: "🏆", name: "Weekly waddle",     description: "Quack 7 days in a row",      test: s => s.streak >= 7},
     {id: "streak14", icon: "📅", name: "Fortnight flock",   description: "Quack 14 days in a row",     test: s => s.streak >= 14},
-    {id: "streak30", icon: "🗓️", name: "Monthly migration", description: "Quack 30 days in a row",     test: s => s.streak >= 30}
+    {id: "streak30", icon: "🗓️", name: "Monthly migration", description: "Quack 30 days in a row",     test: s => s.streak >= 30},
+    // Time of day
+    {id: "nightOwl", icon: "🦉", name: "Night owl",         description: "Quack between 00:00 and 04:00", test: (s, now) => now.getHours() < 4},
+    {id: "earlyBird", icon: "🐓", name: "Early bird",       description: "Quack between 05:00 and 07:00", test: (s, now) => now.getHours() >= 5 && now.getHours() < 7},
+    // Calendar
+    {id: "newYear",  icon: "🎆", name: "Happy new quack",   description: "Quack on January 1st",       test: (s, now) => onDate(now, 1, 1)},
+    {id: "valentine", icon: "💘", name: "Love quack",       description: "Quack on February 14th",     test: (s, now) => onDate(now, 2, 14)},
+    {id: "leapDay",  icon: "🐸", name: "Leap duck",         description: "Quack on February 29th",     test: (s, now) => onDate(now, 2, 29)},
+    {id: "halloween", icon: "🎃", name: "Spooky quack",     description: "Quack on October 31st",      test: (s, now) => onDate(now, 10, 31)},
+    {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25)}
 ]
+
+// month is 1-12 (Date.getMonth() is 0-11)
+function onDate(date, month, day) {
+    return date.getMonth() + 1 === month && date.getDate() === day
+}
 
 function emptyStats() {
     return {
@@ -104,7 +118,7 @@ function record(stats, text, now) {
 // Achievements whose condition is now met but that aren't unlocked yet.
 function newlyUnlocked(stats, now) {
     const sum = summary(stats, now)
-    return ACHIEVEMENTS.filter(a => stats.achievements.indexOf(a.id) === -1 && a.test(sum))
+    return ACHIEVEMENTS.filter(a => stats.achievements.indexOf(a.id) === -1 && a.test(sum, now))
 }
 
 // Returns a new stats object with those achievements marked as unlocked.
