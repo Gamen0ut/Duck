@@ -8,6 +8,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-10-09
+
 ### Fixed
 - Popout and pond emoji sizes follow the DMS font scale instead of fixed pixel sizes (same size at the default scale).
 
@@ -89,7 +91,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Settings: custom quack text, toast toggle.
 - `dev.sh` helper to link, reload and check the plugin status.
 
-[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.6.1...HEAD
+[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/Gamen0ut/Duck/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/Gamen0ut/Duck/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/Gamen0ut/Duck/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Gamen0ut/Duck/compare/v0.4.0...v0.5.0
