@@ -8,6 +8,19 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Added
+- Scroll over the duck to switch birds ("Scroll to change bird" setting, on by default). Works with touchpads too.
+- Right-click and middle-click actions, configurable in a new Mouse section: silent quack (default for right-click), random bird (default for middle-click), show stats, or nothing.
+- Combos: rapid clicks (within 0.5 s) show "Quack! ×3". Only the first click of a combo gets a toast; ×10 brings a warning toast and ×25 an error toast.
+- 3 combo achievements: 🌀 Combo breaker (×10), 💥 Overquacked (×25) and ☄️ Quackpocalypse (×100).
+
+### Fixed
+- `plugin.json` now declares `capabilities` (`dankbar-widget`), which DMS requires for publishing.
+
+### Changed
+- Requires DMS 1.6.0 or newer (`requires_dms`), the version Duck is built and tested on.
+- Clicking the pill's padding now quacks too, and clicks show the DMS ripple effect like other bar widgets.
+
 ## [0.4.0] - 2026-10-09
 
 ### Added

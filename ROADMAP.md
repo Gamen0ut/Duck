@@ -87,7 +87,6 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 
 ### Speed & behavior
 
-- [ ] 🟡 ⚡ **Quack storm**: 10 quacks in 5 seconds. *Needs:* timestamps of recent quacks (in memory only, no need to persist)
 - [ ] 🟡 🐢 **Patience**: quack after not quacking for 7 days. *Needs:* `lastQuackAt` timestamp
 - [ ] 🟡 🔄 **Prodigal duck**: come back after a 30-day break
 - [ ] 🟡 🖥️ **Multi-monitor duck**: quack from two different bars/screens. *Learns:* `parentScreen.name`, multiple instances
@@ -112,13 +111,14 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [ ] 🟡 **Unlock sound / animation** (pairs with 0.7.0 & 0.8.0)
 - [ ] 🟢 **Export / import stats** as JSON. *Learns:* `FileView`, clipboard
 
-## 0.5.0 — Interaction
+## 0.5.0 — Interaction ✅
 
-- [ ] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `MouseArea.acceptedButtons`
-- [ ] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`
+- [x] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `pillRightClickAction`, `MouseArea.acceptedButtons` (middle only, the rest falls through), one action list shared by two settings
+- [x] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`, accumulating touchpad deltas, a widget writing its own setting (`savePluginData`)
 - [x] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
-- [ ] 🟡 **Double-click** = "QUACK QUACK" combo. *Learns:* click timing, gesture disambiguation
-- [ ] 🟢 **Toast levels**: info / warning / error depending on mood. *Learns:* `ToastService` variants
+- [x] 🟡 **Combo** instead of double-click: rapid clicks show "Quack! ×3". *Learns:* click timing; why a real double-click (which delays every single click) is worse here
+- [x] 🟢 **Toast levels**: warning at combo ×10, error at ×25. *Learns:* `ToastService.showWarning` / `showError`
+- [x] 🟢 🌀💥☄️ **Combo achievements** (×10, ×25, ×100). *Learns:* passing click context to achievement checks (`test(summary, now, ctx)`), additive again
 
 ## 0.6.0 — Popout
 
@@ -207,5 +207,9 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **Grow APIs by adding, not changing**: achievement checks went from `test(summary)` to `test(summary, now)`. JS ignores extra arguments, so every existing `s => s.total >= 10` kept working untouched.
 - **Only `var` is exported from a JS library**: QML sees `Stats.ACHIEVEMENTS` only if it's declared with `var`, not `const`/`let`.
 - **Keep logic in a `.pragma library` JS file** to unit-test it with `node`: see `tests/DuckStats.test.js` (strips the pragma, evaluates in a `vm` sandbox; compare results as plain JSON).
+- **Use the pill's own clicks**: `BasePill` already has a MouseArea over the whole pill (padding included) with the ripple effect, handling left and right press. Plug into it with `pillClickAction` / `pillRightClickAction` instead of adding your own MouseArea on top, which hides the ripple and leaves the padding dead. It doesn't handle middle-click or the wheel, so for those keep a MouseArea with `acceptedButtons` set to only what you handle; other buttons fall through to the pill.
+- **Wheel deltas**: a mouse notch is `angleDelta` 120, but touchpads send many small deltas. Accumulate and step once per 120, or a touchpad flips through everything.
+- **Combos beat double-clicks**: a double-click handler must wait (~250 ms) after every click to see if a second one follows, so single clicks feel laggy. Counting rapid clicks with timestamps reacts instantly, and a pure `nextCombo(combo, lastMs, nowMs)` is trivial to test.
+- **`capabilities` is required** by DMS's `plugin-schema.json` (and for publishing), even though plugins load without it. It's a free-form list; bar widgets use `["dankbar-widget"]`. CI now checks every schema-required field.
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.5–0.10.

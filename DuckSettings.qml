@@ -4,6 +4,8 @@ import qs.Modules.Plugins
 import qs.Services
 import qs.Widgets
 import "DuckStats.js" as Stats
+import "Birds.js" as Birds
+import "Input.js" as Input
 
 PluginSettings {
     id: root
@@ -81,13 +83,7 @@ PluginSettings {
         settingKey: "duckEmoji"
         label: "Duck"
         description: "Which bird lives in your bar"
-        options: [
-            {label: "🦆 Duck", value: "🦆"},
-            {label: "🐤 Chick", value: "🐤"},
-            {label: "🐥 Front chick", value: "🐥"},
-            {label: "🐣 Hatching", value: "🐣"},
-            {label: "🦢 Swan", value: "🦢"}
-        ]
+        options: Birds.options()
         defaultValue: "🦆"
     }
 
@@ -163,6 +159,39 @@ PluginSettings {
         fields: [
             {id: "text", label: "Phrase", placeholder: "Quack quack!", width: 250, required: true}
         ]
+    }
+
+    // ── Mouse ─────────────────────────────────────────────
+
+    StyledText {
+        width: parent.width
+        text: "Mouse"
+        font.pixelSize: Theme.fontSizeMedium
+        font.weight: Font.Bold
+        color: Theme.primary
+    }
+
+    SelectionSetting {
+        settingKey: "rightClickAction"
+        label: "Right-click"
+        description: "What a right-click on the duck does"
+        options: Input.CLICK_ACTIONS
+        defaultValue: "silent"
+    }
+
+    SelectionSetting {
+        settingKey: "middleClickAction"
+        label: "Middle-click"
+        description: "What a middle-click on the duck does"
+        options: Input.CLICK_ACTIONS
+        defaultValue: "randomBird"
+    }
+
+    ToggleSetting {
+        settingKey: "scrollChangesBird"
+        label: "Scroll to change bird"
+        description: "Use the mouse wheel over the duck to switch birds"
+        defaultValue: true
     }
 
     // ── Notifications ─────────────────────────────────────

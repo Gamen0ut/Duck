@@ -12,7 +12,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: plugin.json is valid and complete
         run: |
-          jq -e '.id and .name and .version and .component and .type' plugin.json
+          # Fields DMS's plugin-schema.json requires (capabilities: at least one)
+          jq -e '.id and .name and .description and .version and .author and .type and .component' plugin.json
+          jq -e '(.capabilities | type == "array") and (.capabilities | length > 0)' plugin.json
           for f in $(jq -r '.component, .settings // empty' plugin.json); do
             test -f "$f" || { echo "Missing $f" >&2; exit 1; }
           done
@@ -23,4 +25,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unit tests
-        run: node tests/DuckStats.test.js
+        run: for f in tests/*.test.js; do echo "== $f"; node "$f" || exit 1; done

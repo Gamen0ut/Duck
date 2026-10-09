@@ -4,6 +4,8 @@ import qs.Services
 import qs.Widgets
 import qs.Modules.Plugins
 import "DuckStats.js" as Stats
+import "Birds.js" as Birds
+import "Input.js" as Input
 
 PluginComponent {
     id: root
@@ -18,9 +20,33 @@ PluginComponent {
     property var quackPhrases: (pluginData.quackPhrases || []).map(p => p.text).filter(t => t)
     property bool showCounter: pluginData.showCounter ?? false
     property string achievementToasts: pluginData.achievementToasts || "grouped"
+    property bool scrollChangesBird: pluginData.scrollChangesBird ?? true
+    property string rightClickAction: pluginData.rightClickAction || "silent"
+    property string middleClickAction: pluginData.middleClickAction || "randomBird"
 
     property bool quacking: false
     property string currentQuack: quackText
+    property Item hoveredPill: null // for refreshing the tooltip after a click
+
+    // Clicks go through DMS's own pill MouseArea (whole pill incl. padding,
+    // with the ripple effect) instead of a MouseArea of ours.
+    pillClickAction: () => quack()
+    pillRightClickAction: () => runAction(rightClickAction)
+
+    // Actions for right-/middle-click (see Input.CLICK_ACTIONS).
+    function runAction(action) {
+        switch (action) {
+        case "silent":
+            quack(true)
+            break
+        case "randomBird":
+            setBird(Birds.random(duckEmoji))
+            break
+        case "stats":
+            ToastService.showInfo(tooltipText())
+            break
+        }
+    }
 
     function pickQuack() {
         if (randomQuack && quackPhrases.length > 0)
@@ -28,13 +54,56 @@ PluginComponent {
         return quackText
     }
 
-    function quack() {
-        currentQuack = pickQuack()
+    // ── Combo ─────────────────────────────────────────────
+
+    property int combo: 0
+    property real lastClickMs: 0
+    readonly property string comboSuffix: combo > 1 ? " ×" + combo : ""
+
+    function showComboToast() {
+        const t = Input.comboToast(combo)
+        if (!t)
+            return
+        if (t.level === "error")
+            ToastService.showError(t.text)
+        else
+            ToastService.showWarning(t.text)
+    }
+
+    function quack(silent) {
+        const now = Date.now()
+        combo = Input.nextCombo(combo, lastClickMs, now)
+        lastClickMs = now
+        if (combo === 1)
+            currentQuack = pickQuack() // keep the same text during a combo
         quacking = true
         resetTimer.restart()
         recordQuack()
-        if (showToast)
-            ToastService.showInfo(duckEmoji + " " + currentQuack)
+        if (showToast && !silent) {
+            if (combo === 1)
+                ToastService.showInfo(duckEmoji + " " + currentQuack)
+            showComboToast()
+        }
+        if (hoveredPill)
+            showTooltip(hoveredPill) // refresh the numbers
+    }
+
+    // The widget writes its own setting: savePluginData() notifies every
+    // Duck instance and the settings page, exactly like the dropdown does.
+    function setBird(emoji) {
+        if (pluginService && emoji !== duckEmoji)
+            pluginService.savePluginData(stateId, "duckEmoji", emoji)
+    }
+
+    // ── Scroll wheel ──────────────────────────────────────
+
+    property real wheelAcc: 0
+
+    function handleWheel(delta) {
+        const r = Input.wheelSteps(wheelAcc, delta)
+        wheelAcc = r.acc
+        if (r.steps !== 0)
+            setBird(Birds.next(duckEmoji, -r.steps)) // wheel down = next bird
     }
 
     // ── Stats (plugin state, not settings) ────────────────
@@ -53,7 +122,7 @@ PluginComponent {
     function recordQuack() {
         const now = new Date()
         stats = Stats.record(stats, currentQuack, now)
-        const unlocked = Stats.newlyUnlocked(stats, now)
+        const unlocked = Stats.newlyUnlocked(stats, now, {combo: combo})
         if (unlocked.length > 0) {
             stats = Stats.unlock(stats, unlocked, now)
             for (const t of Stats.unlockToasts(unlocked, achievementToasts))
@@ -155,7 +224,7 @@ PluginComponent {
                 }
                 StyledText {
                     visible: root.quacking
-                    text: root.currentQuack
+                    text: root.currentQuack + root.comboSuffix
                     font.pixelSize: Theme.fontSizeMedium
                     font.weight: Font.Bold
                     color: root.quackColor
@@ -166,13 +235,23 @@ PluginComponent {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
+                // Only the middle button: left/right fall through to DMS's pill.
+                acceptedButtons: Qt.MiddleButton
                 cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    root.quack()
-                    root.showTooltip(parent) // refresh the numbers
+                onClicked: root.runAction(root.middleClickAction)
+                onWheel: wheel => {
+                    wheel.accepted = root.scrollChangesBird
+                    if (root.scrollChangesBird)
+                        root.handleWheel(wheel.angleDelta.y || wheel.angleDelta.x)
                 }
-                onEntered: root.showTooltip(parent)
-                onExited: root.hideTooltip()
+                onEntered: {
+                    root.hoveredPill = parent
+                    root.showTooltip(parent)
+                }
+                onExited: {
+                    root.hoveredPill = null
+                    root.hideTooltip()
+                }
             }
         }
     }
@@ -201,7 +280,7 @@ PluginComponent {
                 }
                 StyledText {
                     visible: root.quacking
-                    text: "Q!"
+                    text: root.combo > 1 ? "×" + root.combo : "Q!"
                     font.pixelSize: Theme.fontSizeSmall
                     font.weight: Font.Bold
                     color: root.quackColor
@@ -212,13 +291,23 @@ PluginComponent {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
+                // Only the middle button: left/right fall through to DMS's pill.
+                acceptedButtons: Qt.MiddleButton
                 cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    root.quack()
-                    root.showTooltip(parent) // refresh the numbers
+                onClicked: root.runAction(root.middleClickAction)
+                onWheel: wheel => {
+                    wheel.accepted = root.scrollChangesBird
+                    if (root.scrollChangesBird)
+                        root.handleWheel(wheel.angleDelta.y || wheel.angleDelta.x)
                 }
-                onEntered: root.showTooltip(parent)
-                onExited: root.hideTooltip()
+                onEntered: {
+                    root.hoveredPill = parent
+                    root.showTooltip(parent)
+                }
+                onExited: {
+                    root.hoveredPill = null
+                    root.hideTooltip()
+                }
             }
         }
     }
