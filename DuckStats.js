@@ -9,13 +9,22 @@ const KEEP_DAYS = 90 // per-day history older than this is dropped
 // `test` receives summary(stats, now). `var`, not `const`: only `var` is
 // visible from QML as Stats.ACHIEVEMENTS.
 var ACHIEVEMENTS = [
-    {id: "first",   icon: "🥚", name: "First quack",      description: "Quack once",                 test: s => s.total >= 1},
-    {id: "q10",     icon: "🐣", name: "Chatty duckling",  description: "Quack 10 times",             test: s => s.total >= 10},
-    {id: "q100",    icon: "🦆", name: "Seasoned quacker", description: "Quack 100 times",            test: s => s.total >= 100},
-    {id: "q1000",   icon: "👑", name: "Duck royalty",     description: "Quack 1000 times",           test: s => s.total >= 1000},
-    {id: "day25",   icon: "⚡", name: "Quack attack",     description: "Quack 25 times in one day",  test: s => s.today >= 25},
-    {id: "streak3", icon: "🔥", name: "On a roll",        description: "Quack 3 days in a row",      test: s => s.streak >= 3},
-    {id: "streak7", icon: "🏆", name: "Weekly waddle",    description: "Quack 7 days in a row",      test: s => s.streak >= 7}
+    // Milestones
+    {id: "first",    icon: "🥚", name: "First quack",       description: "Quack once",                 test: s => s.total >= 1},
+    {id: "q10",      icon: "🐣", name: "Chatty duckling",   description: "Quack 10 times",             test: s => s.total >= 10},
+    {id: "q42",      icon: "🎲", name: "The answer",        description: "Quack 42 times",             test: s => s.total >= 42},
+    {id: "q100",     icon: "🦆", name: "Seasoned quacker",  description: "Quack 100 times",            test: s => s.total >= 100},
+    {id: "q666",     icon: "😈", name: "Devil's quack",     description: "Quack 666 times",            test: s => s.total >= 666},
+    {id: "q1000",    icon: "👑", name: "Duck royalty",      description: "Quack 1000 times",           test: s => s.total >= 1000},
+    {id: "q1337",    icon: "🕶️", name: "Leet quacker",      description: "Quack 1337 times",           test: s => s.total >= 1337},
+    // Daily
+    {id: "day25",    icon: "⚡", name: "Quack attack",      description: "Quack 25 times in one day",  test: s => s.today >= 25},
+    {id: "day100",   icon: "🌪️", name: "Quack frenzy",      description: "Quack 100 times in one day", test: s => s.today >= 100},
+    // Streaks (history keeps 90 days, so streaks above 91 can't be detected)
+    {id: "streak3",  icon: "🔥", name: "On a roll",         description: "Quack 3 days in a row",      test: s => s.streak >= 3},
+    {id: "streak7",  icon: "🏆", name: "Weekly waddle",     description: "Quack 7 days in a row",      test: s => s.streak >= 7},
+    {id: "streak14", icon: "📅", name: "Fortnight flock",   description: "Quack 14 days in a row",     test: s => s.streak >= 14},
+    {id: "streak30", icon: "🗓️", name: "Monthly migration", description: "Quack 30 days in a row",     test: s => s.streak >= 30}
 ]
 
 function emptyStats() {

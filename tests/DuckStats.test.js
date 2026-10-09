@@ -73,4 +73,46 @@ test("achievements unlock once, in order", () => {
     same(ids(S.newlyUnlocked(s, d("2026-10-11"))), ["streak3"])
 })
 
+// Quack `n` times on each of `days` consecutive days starting at `start`,
+// unlocking achievements as the widget does. Returns the final stats.
+function play(stats, start, days, n) {
+    for (let day = 0; day < days; day++) {
+        const now = new Date(start.getFullYear(), start.getMonth(), start.getDate() + day, 12)
+        for (let i = 0; i < n; i++) {
+            stats = S.record(stats, "q", now)
+            stats = S.unlock(stats, S.newlyUnlocked(stats, now))
+        }
+    }
+    return stats
+}
+
+test("milestones unlock exactly at their threshold", () => {
+    for (const [id, total] of [["q42", 42], ["q666", 666], ["q1337", 1337]]) {
+        const before = play(S.normalize(null), d("2026-01-01"), 1, total - 1)
+        assert.ok(!before.achievements.includes(id), id + " too early")
+        const at = play(before, d("2026-01-01"), 1, 1)
+        assert.ok(at.achievements.includes(id), id + " not unlocked at " + total)
+    }
+})
+
+test("Quack frenzy needs 100 quacks on the same day", () => {
+    const spread = play(S.normalize(null), d("2026-01-01"), 2, 60)
+    assert.ok(!spread.achievements.includes("day100"))
+    assert.ok(play(S.normalize(null), d("2026-01-01"), 1, 100).achievements.includes("day100"))
+})
+
+test("14- and 30-day streaks unlock on the right day", () => {
+    const s13 = play(S.normalize(null), d("2026-01-01"), 13, 1)
+    assert.ok(!s13.achievements.includes("streak14"))
+    const s14 = play(s13, d("2026-01-14"), 1, 1)
+    assert.ok(s14.achievements.includes("streak14"))
+    const s30 = play(s14, d("2026-01-15"), 16, 1)
+    assert.ok(s30.achievements.includes("streak30"))
+})
+
+test("achievement ids are unique", () => {
+    const all = ids(S.ACHIEVEMENTS)
+    assert.strictEqual(new Set(all).size, all.length)
+})
+
 console.log(`\n${passed} tests passed`)

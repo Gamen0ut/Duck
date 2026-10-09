@@ -43,12 +43,12 @@ Try every settings widget DMS offers.
 From 7 to 22 achievements, plus secret ones and unlock dates.
 
 **A. Milestones & streaks** (fit the existing stats)
-- [ ] 🟢 🎲 **The answer**: 42 quacks
-- [ ] 🟢 😈 **Devil's quack**: 666 quacks
-- [ ] 🟢 🕶️ **Leet quacker**: 1337 quacks
-- [ ] 🟢 🌪️ **Quack frenzy**: 100 quacks in one day
-- [ ] 🟢 📅 **Fortnight flock**: 14-day streak
-- [ ] 🟢 🗓️ **Monthly migration**: 30-day streak
+- [x] 🟢 🎲 **The answer**: 42 quacks
+- [x] 🟢 😈 **Devil's quack**: 666 quacks
+- [x] 🟢 🕶️ **Leet quacker**: 1337 quacks
+- [x] 🟢 🌪️ **Quack frenzy**: 100 quacks in one day
+- [x] 🟢 📅 **Fortnight flock**: 14-day streak
+- [x] 🟢 🗓️ **Monthly migration**: 30-day streak
 
 **B. Time & calendar.** *Learns:* extending the achievement `test` with the quack's `Date` without breaking existing tests
 - [ ] 🟢 🦉 **Night owl**: quack between 00:00 and 04:00
