@@ -33,7 +33,7 @@ case "$1" in
     echo "Capturing Pictures/$name.png in ${delay}s..."; sleep "$delay"
     dms screenshot last --dir "$DIR/Pictures" --filename "$name.png" --no-clipboard ;;
   record)
-    # Records a region to Pictures/<name>.gif: select the region, then 3 s
+    # Records a region to Pictures/<name>.gif: select the region, then 5 s
     # to open the popout, then <seconds> of recording (default 7), converted
     # with an optimised palette (15 fps, 480 px wide). Needs wf-recorder.
     name="$2"; secs="${3:-7}"
@@ -43,7 +43,7 @@ case "$1" in
     echo "Select the region to record..."
     geo="$(dms screenshot region -g)"
     [ -n "$geo" ] || { echo "No region selected"; exit 1; }
-    echo "Recording $geo in 3 s, for ${secs} s..."; sleep 3
+    echo "Recording $geo in 5 s, for ${secs} s..."; sleep 5
     timeout -s INT "$secs" wf-recorder -g "$geo" -f "$tmp/rec.mp4" >/dev/null 2>&1 || true
     [ -s "$tmp/rec.mp4" ] || { echo "Recording failed"; exit 1; }
     mkdir -p "$DIR/Pictures"
