@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: ./dev.sh link | reload | status | release <x.y.z>
+# Usage: ./dev.sh link | reload | status | shot <name> [delay] | release <x.y.z>
 set -e
 DIR="$(cd "$(dirname "$0")" && pwd)"
 DEST="$HOME/.config/DankMaterialShell/plugins/Duck"
@@ -21,6 +21,18 @@ case "$1" in
     echo "$out"
     [[ "$out" != *FAILED* ]] ;;
   status) dms ipc call plugins status duck ;;
+  shot)
+    # Captures the last-selected screen region after a delay, so there's time
+    # to open the popout first (picking a region could close it). Pick the
+    # region once beforehand: dms screenshot region --no-file
+    # "screenshot" goes to the plugin root (the main image, like other DMS
+    # plugins); anything else to screenshots/.
+    name="$2"; delay="${3:-3}"
+    [ -n "$name" ] || { echo "Usage: $0 shot <name> [delay]"; exit 1; }
+    out="$DIR/screenshots"; [ "$name" = "screenshot" ] && out="$DIR"
+    mkdir -p "$out"
+    echo "Capturing $name.png in ${delay}s..."; sleep "$delay"
+    dms screenshot last --dir "$out" --filename "$name.png" --no-clipboard ;;
   release)
     v="$2"
     [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Usage: $0 release <x.y.z>"; exit 1; }
@@ -34,5 +46,5 @@ case "$1" in
     git tag -a "v$v" -m "v$v"
     echo "Tagged v$v. Review with: git show --stat HEAD, then: git push --follow-tags"
     ;;
-  *)      echo "Usage: $0 link | reload | status | release <x.y.z>"; exit 1 ;;
+  *)      echo "Usage: $0 link | reload | status | shot <name> [delay] | release <x.y.z>"; exit 1 ;;
 esac
