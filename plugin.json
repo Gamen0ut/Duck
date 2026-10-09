@@ -9,5 +9,6 @@
   "capabilities": ["dankbar-widget"],
   "component": "./Duck.qml",
   "settings": "./DuckSettings.qml",
-  "permissions": ["settings_read", "settings_write"]
+  "permissions": ["settings_read", "settings_write"],
+  "requires_dms": ">=1.6.0"
 }

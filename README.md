@@ -19,7 +19,7 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 
 ## Requirements
 
-- DankMaterialShell with plugin support
+- DankMaterialShell **1.6.0 or newer**
 - `dms` CLI available in `$PATH` (for `dev.sh reload` / `status`)
 
 ## Installation
