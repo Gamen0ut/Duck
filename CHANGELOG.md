@@ -8,6 +8,9 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Fixed
+- Birds in the pond no longer swim on top of each other: 6 lanes instead of 4, and birds sharing a lane start from opposite sides.
+
 ## [0.6.0] - 2026-10-09
 
 ### Added
