@@ -6,6 +6,7 @@
   "author": "Gamen0ut",
   "icon": "pets",
   "type": "widget",
+  "capabilities": ["dankbar-widget"],
   "component": "./Duck.qml",
   "settings": "./DuckSettings.qml",
   "permissions": ["settings_read", "settings_write"]
