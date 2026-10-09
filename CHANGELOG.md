@@ -15,11 +15,11 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - 3 combo achievements: 🌀 Combo breaker (×10), 💥 Overquacked (×25) and ☄️ Quackpocalypse (×100).
 
 ### Fixed
+- Clicking the pill's padding now quacks too, and clicks show the DMS ripple effect like other bar widgets.
 - `plugin.json` now declares `capabilities` (`dankbar-widget`), which DMS requires for publishing.
 
 ### Changed
 - Requires DMS 1.6.0 or newer (`requires_dms`), the version Duck is built and tested on.
-- Clicking the pill's padding now quacks too, and clicks show the DMS ripple effect like other bar widgets.
 
 ## [0.4.0] - 2026-10-09
 
