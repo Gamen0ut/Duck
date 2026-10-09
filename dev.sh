@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: ./dev.sh link | reload | status | release <x.y.z>
+# Usage: ./dev.sh link | reload | status | shot <name> [delay] | record <name> [seconds] | release <x.y.z>
 set -e
 DIR="$(cd "$(dirname "$0")" && pwd)"
 DEST="$HOME/.config/DankMaterialShell/plugins/Duck"
@@ -21,6 +21,36 @@ case "$1" in
     echo "$out"
     [[ "$out" != *FAILED* ]] ;;
   status) dms ipc call plugins status duck ;;
+  shot)
+    # Captures the last-selected screen region after a delay, so there's time
+    # to open the popout first (picking a region could close it). Pick the
+    # region once beforehand: dms screenshot region --no-file
+    # Saved to Pictures/ (gitignored raw shots); copy the keepers to
+    # screenshots/ or screenshot.png for the README.
+    name="$2"; delay="${3:-3}"
+    [ -n "$name" ] || { echo "Usage: $0 shot <name> [delay]"; exit 1; }
+    mkdir -p "$DIR/Pictures"
+    echo "Capturing Pictures/$name.png in ${delay}s..."; sleep "$delay"
+    dms screenshot last --dir "$DIR/Pictures" --filename "$name.png" --no-clipboard ;;
+  record)
+    # Records a region to Pictures/<name>.gif: select the region, then 5 s
+    # to open the popout, then <seconds> of recording (default 7), converted
+    # with an optimised palette (15 fps, 480 px wide). Needs wf-recorder.
+    name="$2"; secs="${3:-7}"
+    [ -n "$name" ] || { echo "Usage: $0 record <name> [seconds]"; exit 1; }
+    command -v wf-recorder >/dev/null || { echo "wf-recorder is not installed"; exit 1; }
+    tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+    echo "Select the region to record..."
+    geo="$(dms screenshot region -g)"
+    [ -n "$geo" ] || { echo "No region selected"; exit 1; }
+    echo "Recording $geo in 5 s, for ${secs} s..."; sleep 5
+    timeout -s INT "$secs" wf-recorder -g "$geo" -f "$tmp/rec.mp4" >/dev/null 2>&1 || true
+    [ -s "$tmp/rec.mp4" ] || { echo "Recording failed"; exit 1; }
+    mkdir -p "$DIR/Pictures"
+    ffmpeg -loglevel error -y -i "$tmp/rec.mp4" \
+      -vf "fps=15,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse" \
+      "$DIR/Pictures/$name.gif"
+    echo "Saved Pictures/$name.gif ($(du -h "$DIR/Pictures/$name.gif" | cut -f1))" ;;
   release)
     v="$2"
     [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Usage: $0 release <x.y.z>"; exit 1; }
@@ -34,5 +64,5 @@ case "$1" in
     git tag -a "v$v" -m "v$v"
     echo "Tagged v$v. Review with: git show --stat HEAD, then: git push --follow-tags"
     ;;
-  *)      echo "Usage: $0 link | reload | status | release <x.y.z>"; exit 1 ;;
+  *)      echo "Usage: $0 link | reload | status | shot <name> [delay] | record <name> [seconds] | release <x.y.z>"; exit 1 ;;
 esac
