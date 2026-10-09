@@ -8,6 +8,12 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-10-09
+
+### Fixed
+- Birds in the pond no longer swim on top of each other: 6 lanes instead of 4, and birds sharing a lane start from opposite sides.
+- Settings: "Custom quack color" now sits right above the color picker it controls.
+
 ## [0.6.0] - 2026-10-09
 
 ### Added
@@ -80,7 +86,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Settings: custom quack text, toast toggle.
 - `dev.sh` helper to link, reload and check the plugin status.
 
-[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/Gamen0ut/Duck/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/Gamen0ut/Duck/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Gamen0ut/Duck/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Gamen0ut/Duck/compare/v0.3.0...v0.4.0

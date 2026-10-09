@@ -14,6 +14,11 @@ Rectangle {
     property bool active: visible
     signal birdClicked
 
+    // 6 lanes keep up to 12 birds apart vertically (a bird is ~36 px tall,
+    // the popout's pond 260 px); two birds share a lane at most, starting
+    // from opposite sides.
+    readonly property int lanes: 6
+
     radius: Theme.cornerRadius
     color: Theme.withAlpha(Theme.primary, 0.12)
     clip: true
@@ -25,9 +30,12 @@ Rectangle {
             id: swimmer
 
             required property int index
-            readonly property real lane: (index % 4 + 0.5) / 4  // 4 lanes, top to bottom
+            readonly property int laneIndex: index % pond.lanes
+            readonly property real lane: (laneIndex + 0.5) / pond.lanes // 0..1, top to bottom
             readonly property int swimMs: 4000 + (index * 1373) % 5000 // varied, but stable
-            readonly property bool startsRight: index % 2 === 1
+            // neighbouring lanes alternate, and a lane's second bird starts
+            // on the other side than its first
+            readonly property bool startsRight: (laneIndex + Math.floor(index / pond.lanes)) % 2 === 1
             readonly property real rightEdge: pond.width - width
             property bool facingRight: !startsRight
 
