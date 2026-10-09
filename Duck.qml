@@ -21,6 +21,11 @@ PluginComponent {
 
     property bool quacking: false
     property string currentQuack: quackText
+    property Item hoveredPill: null // for refreshing the tooltip after a click
+
+    // Clicks go through DMS's own pill MouseArea (whole pill incl. padding,
+    // with the ripple effect) instead of a MouseArea of ours.
+    pillClickAction: () => quack()
 
     function pickQuack() {
         if (randomQuack && quackPhrases.length > 0)
@@ -35,6 +40,8 @@ PluginComponent {
         recordQuack()
         if (showToast)
             ToastService.showInfo(duckEmoji + " " + currentQuack)
+        if (hoveredPill)
+            showTooltip(hoveredPill) // refresh the numbers
     }
 
     // ── Stats (plugin state, not settings) ────────────────
@@ -166,13 +173,16 @@ PluginComponent {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
+                acceptedButtons: Qt.NoButton // clicks fall through to DMS's pill
                 cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    root.quack()
-                    root.showTooltip(parent) // refresh the numbers
+                onEntered: {
+                    root.hoveredPill = parent
+                    root.showTooltip(parent)
                 }
-                onEntered: root.showTooltip(parent)
-                onExited: root.hideTooltip()
+                onExited: {
+                    root.hoveredPill = null
+                    root.hideTooltip()
+                }
             }
         }
     }
@@ -212,13 +222,16 @@ PluginComponent {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
+                acceptedButtons: Qt.NoButton // clicks fall through to DMS's pill
                 cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    root.quack()
-                    root.showTooltip(parent) // refresh the numbers
+                onEntered: {
+                    root.hoveredPill = parent
+                    root.showTooltip(parent)
                 }
-                onEntered: root.showTooltip(parent)
-                onExited: root.hideTooltip()
+                onExited: {
+                    root.hoveredPill = null
+                    root.hideTooltip()
+                }
             }
         }
     }

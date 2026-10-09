@@ -8,6 +8,9 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Fixed
+- Clicking the pill's padding now quacks too, and clicks show the DMS ripple effect like other bar widgets.
+
 ## [0.4.0] - 2026-10-09
 
 ### Added
