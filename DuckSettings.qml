@@ -172,11 +172,19 @@ PluginSettings {
     }
 
     SelectionSetting {
+        settingKey: "leftClickAction"
+        label: "Left-click"
+        description: "What a left-click on the duck does"
+        options: Input.LEFT_CLICK_ACTIONS
+        defaultValue: "quack"
+    }
+
+    SelectionSetting {
         settingKey: "rightClickAction"
         label: "Right-click"
         description: "What a right-click on the duck does"
         options: Input.CLICK_ACTIONS
-        defaultValue: "silent"
+        defaultValue: "popout"
     }
 
     SelectionSetting {
@@ -251,39 +259,8 @@ PluginSettings {
         color: Theme.surfaceVariantText
     }
 
-    Column {
-        width: parent.width
-        spacing: Theme.spacingXS
-
-        Repeater {
-            model: Stats.ACHIEVEMENTS
-
-            Row {
-                required property var modelData
-                readonly property bool unlocked: root.stats.achievements.indexOf(modelData.id) !== -1
-                readonly property bool secret: modelData.hidden === true && !unlocked
-
-                spacing: Theme.spacingS
-                opacity: unlocked ? 1 : 0.4
-
-                StyledText {
-                    text: parent.unlocked ? parent.modelData.icon : "🔒"
-                    font.pixelSize: Theme.fontSizeMedium
-                }
-                StyledText {
-                    text: {
-                        if (parent.secret)
-                            return "??? · Secret achievement"
-                        const at = root.stats.unlockedAt[parent.modelData.id]
-                        return parent.modelData.name + " · " + parent.modelData.description
-                            + (at ? " · " + Qt.formatDate(new Date(at), "d MMM yyyy") : "")
-                    }
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.surfaceText
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            }
-        }
+    AchievementList {
+        stats: root.stats
     }
 
     ConfirmButton {

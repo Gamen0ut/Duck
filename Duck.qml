@@ -21,8 +21,11 @@ PluginComponent {
     property bool showCounter: pluginData.showCounter ?? false
     property string achievementToasts: pluginData.achievementToasts || "grouped"
     property bool scrollChangesBird: pluginData.scrollChangesBird ?? true
-    property string rightClickAction: pluginData.rightClickAction || "silent"
+    property string leftClickAction: pluginData.leftClickAction || "quack"
+    property string rightClickAction: pluginData.rightClickAction || "popout"
     property string middleClickAction: pluginData.middleClickAction || "randomBird"
+
+    property var popoutService: null // injected by DMS because it's declared
 
     property bool quacking: false
     property string currentQuack: quackText
@@ -30,8 +33,27 @@ PluginComponent {
 
     // Clicks go through DMS's own pill MouseArea (whole pill incl. padding,
     // with the ripple effect) instead of a MouseArea of ours.
-    pillClickAction: () => quack()
     pillRightClickAction: () => runAction(rightClickAction)
+
+    // Left-click: with a pillClickAction DMS runs it; without one, DMS opens
+    // our popout itself. Assigned imperatively (not a binding) because
+    // openPopout() temporarily clears it.
+    readonly property var quackClick: () => quack()
+
+    function applyLeftClick() {
+        pillClickAction = leftClickAction === "popout" ? null : quackClick
+    }
+
+    onLeftClickActionChanged: applyLeftClick()
+
+    // DMS's triggerPopout() runs pillClickAction instead of opening the popout
+    // when one is set ("pillClickAction overrides popout"), and there's no
+    // other API to open a plugin's own popout. So clear it for this one call.
+    function openPopout() {
+        pillClickAction = null
+        triggerPopout()
+        applyLeftClick()
+    }
 
     // Actions for right-/middle-click (see Input.CLICK_ACTIONS).
     function runAction(action) {
@@ -41,6 +63,9 @@ PluginComponent {
             break
         case "randomBird":
             setBird(Birds.random(duckEmoji))
+            break
+        case "popout":
+            openPopout()
             break
         case "stats":
             ToastService.showInfo(tooltipText())
@@ -122,7 +147,21 @@ PluginComponent {
     function recordQuack() {
         const now = new Date()
         stats = Stats.record(stats, currentQuack, now)
-        const unlocked = Stats.newlyUnlocked(stats, now, {combo: combo})
+        unlockAndSave(now, {combo: combo})
+    }
+
+    function feed() {
+        stats = Stats.feed(stats)
+        currentQuack = "Nom nom! 😋"
+        quacking = true
+        resetTimer.restart()
+        if (showToast)
+            ToastService.showInfo("🍞 Nom nom!")
+        unlockAndSave(new Date(), {combo: 0})
+    }
+
+    function unlockAndSave(now, ctx) {
+        const unlocked = Stats.newlyUnlocked(stats, now, ctx)
         if (unlocked.length > 0) {
             stats = Stats.unlock(stats, unlocked, now)
             for (const t of Stats.unlockToasts(unlocked, achievementToasts))
@@ -141,7 +180,10 @@ PluginComponent {
         return text
     }
 
-    Component.onCompleted: loadStats()
+    Component.onCompleted: {
+        applyLeftClick()
+        loadStats()
+    }
     onPluginServiceChanged: loadStats()
 
     // Another Duck instance (other bar/monitor) or the settings page changed
@@ -307,6 +349,209 @@ PluginComponent {
                 onExited: {
                     root.hoveredPill = null
                     root.hideTooltip()
+                }
+            }
+        }
+    }
+
+    // ── Popout ────────────────────────────────────────────
+
+    popoutWidth: 360
+
+    popoutContent: Component {
+        PopoutComponent {
+            id: popout
+            headerText: root.duckEmoji + " Duck"
+            showCloseButton: true
+
+            readonly property var summary: Stats.summary(root.stats, new Date())
+
+            // Tabs are identified by id, so adding one doesn't shift the others.
+            readonly property var tabs: [
+                {id: "pond", label: "Pond"},
+                {id: "history", label: "History"},
+                {id: "achievements", label: "Achievements"}
+            ]
+            property string tab: "pond"
+
+            function timeLabel(ms) {
+                const d = new Date(ms)
+                const sameDay = d.toDateString() === new Date().toDateString()
+                return Qt.formatDateTime(d, sameDay ? "HH:mm" : "d MMM HH:mm")
+            }
+
+            Column {
+                width: parent.width
+                spacing: Theme.spacingM
+                topPadding: Theme.spacingS
+                bottomPadding: Theme.spacingM
+
+                // Big duck: click it to quack (same as the pill, combos too)
+                Item {
+                    width: parent.width
+                    height: bigDuck.implicitHeight + quackLine.implicitHeight
+
+                    StyledText {
+                        id: bigDuck
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: root.duckEmoji
+                        font.pixelSize: 72
+                    }
+                    StyledText {
+                        id: quackLine
+                        anchors.top: bigDuck.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: root.currentQuack + root.comboSuffix
+                        opacity: root.quacking ? 1 : 0
+                        font.pixelSize: Theme.fontSizeLarge
+                        font.weight: Font.Bold
+                        color: root.quackColor
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.quack()
+                    }
+                }
+
+                // Stats
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: Theme.spacingL
+
+                    Repeater {
+                        model: [
+                            {value: popout.summary.total, label: "quacks"},
+                            {value: popout.summary.today, label: "today"},
+                            {value: "🔥 " + popout.summary.streak, label: "day streak"},
+                            {value: "🏅 " + root.stats.achievements.length + "/" + Stats.ACHIEVEMENTS.length, label: "achievements"}
+                        ]
+
+                        Column {
+                            required property var modelData
+                            spacing: 2
+
+                            StyledText {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: parent.modelData.value
+                                font.pixelSize: Theme.fontSizeLarge
+                                font.weight: Font.Bold
+                                color: Theme.surfaceText
+                            }
+                            StyledText {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: parent.modelData.label
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                        }
+                    }
+                }
+
+                DankButtonGroup {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    visible: popout.tabs.length > 1
+                    buttonHeight: 32
+                    textSize: Theme.fontSizeSmall
+                    model: popout.tabs.map(t => t.label)
+                    currentIndex: popout.tabs.findIndex(t => t.id === popout.tab)
+                    selectionMode: "single"
+                    onSelectionChanged: (index, selected) => {
+                        if (selected)
+                            popout.tab = popout.tabs[index].id
+                    }
+                }
+
+                // Tab content: fixed height, each tab scrolls on its own
+                Item {
+                    width: parent.width
+                    height: 260
+
+                    // One bird per quack today (at least 1, at most 12)
+                    Pond {
+                        anchors.fill: parent
+                        visible: popout.tab === "pond"
+                        count: Math.max(1, Math.min(12, popout.summary.today))
+                        mainBird: root.duckEmoji
+                        onBirdClicked: root.quack()
+                    }
+
+                    DankListView {
+                        anchors.fill: parent
+                        visible: popout.tab === "history"
+                        clip: true
+                        spacing: Theme.spacingXS
+                        model: root.stats.history
+
+                        delegate: Row {
+                            required property var modelData
+                            width: ListView.view.width
+                            spacing: Theme.spacingS
+
+                            StyledText {
+                                width: 90
+                                text: popout.timeLabel(parent.modelData.at)
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceVariantText
+                            }
+                            StyledText {
+                                width: parent.width - 90 - parent.spacing
+                                text: parent.modelData.text + (parent.modelData.count > 1 ? "  ×" + parent.modelData.count : "")
+                                font.pixelSize: Theme.fontSizeSmall
+                                color: Theme.surfaceText
+                                elide: Text.ElideRight
+                            }
+                        }
+
+                        StyledText {
+                            anchors.centerIn: parent
+                            visible: root.stats.history.length === 0
+                            text: "No quacks yet. Click the duck!"
+                            font.pixelSize: Theme.fontSizeSmall
+                            color: Theme.surfaceVariantText
+                        }
+                    }
+
+                    DankFlickable {
+                        anchors.fill: parent
+                        visible: popout.tab === "achievements"
+                        clip: true
+                        contentWidth: width
+                        contentHeight: achievementList.implicitHeight
+
+                        AchievementList {
+                            id: achievementList
+                            width: parent.width
+                            stats: root.stats
+                        }
+                    }
+                }
+
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: Theme.spacingS
+
+                    DankButton {
+                        text: "Feed"
+                        iconName: "bakery_dining"
+                        onClicked: root.feed()
+                    }
+                    DankButton {
+                        text: "Random bird"
+                        iconName: "casino"
+                        onClicked: root.runAction("randomBird")
+                    }
+                    DankButton {
+                        text: "Settings"
+                        iconName: "settings"
+                        onClicked: {
+                            // closePopout is injected by DMS into PopoutComponent
+                            if (popout.closePopout)
+                                popout.closePopout()
+                            if (root.popoutService)
+                                root.popoutService.openSettingsWithTab("plugins")
+                        }
+                    }
                 }
             }
         }

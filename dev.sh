@@ -6,9 +6,16 @@ DEST="$HOME/.config/DankMaterialShell/plugins/Duck"
 case "$1" in
   link)   mkdir -p "$(dirname "$DEST")"; ln -sfn "$DIR" "$DEST"; echo "Linked $DIR -> $DEST" ;;
   reload)
-    # `plugins reload` fails every other time ("File name case mismatch") for
-    # plugins that import sibling files (DuckStats.js, ConfirmButton.qml).
-    # Only this dev-only path is affected: startup and enable load fine.
+    # Limits of `dms ipc call plugins reload` for a multi-file plugin:
+    # - DMS adds ?t=<now> to Duck.qml only. Relative imports drop the query, so
+    #   sibling files (*.js, other *.qml) come back from Qt's cache: edits to
+    #   them are NOT picked up. For a full fresh reload use the Reloader
+    #   plugin's bar button (or restart the shell).
+    # - A file added since the last load can make the first attempt fail
+    #   ("X is not a type"), so retry once.
+    # rescan first: it rebuilds Duck's paths from plugin.json, undoing a
+    # Reloader farm path that would hide files added after it was made.
+    dms ipc call plugin-scan rescan duck >/dev/null
     out="$(dms ipc call plugins reload duck)"
     [[ "$out" == *FAILED* ]] && out="$(dms ipc call plugins reload duck)"
     echo "$out"

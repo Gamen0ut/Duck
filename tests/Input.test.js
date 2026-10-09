@@ -23,8 +23,10 @@ test("changing direction cancels the partial delta", () => {
 })
 
 test("click actions have unique values", () => {
-    const values = I.CLICK_ACTIONS.map(a => a.value)
-    assert.strictEqual(new Set(values).size, values.length)
+    for (const list of [I.CLICK_ACTIONS, I.LEFT_CLICK_ACTIONS]) {
+        const values = list.map(a => a.value)
+        assert.strictEqual(new Set(values).size, values.length)
+    }
 })
 
 test("clicks within 500 ms build a combo, a pause resets it", () => {

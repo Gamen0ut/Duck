@@ -5,6 +5,8 @@
 // (pluginService.savePluginState("duck", "stats", ...)), not in settings.
 
 const KEEP_DAYS = 90 // per-day history older than this is dropped
+var HISTORY_SIZE = 20 // recent quacks kept for the popout's History tab
+var HISTORY_MERGE_MS = 2000 // same text this close together = one entry ×N
 
 // `test(summary, now, ctx)` receives summary(stats, now), the Date of the
 // quack and the click context ({combo}; tests may omit it).
@@ -41,6 +43,8 @@ var ACHIEVEMENTS = [
     {id: "leapDay",  icon: "🐸", name: "Leap duck",         description: "Quack on February 29th",     test: (s, now) => onDate(now, 2, 29), hidden: true},
     {id: "halloween", icon: "🎃", name: "Spooky quack",     description: "Quack on October 31st",      test: (s, now) => onDate(now, 10, 31), hidden: true},
     {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25), hidden: true},
+    // Care
+    {id: "fed10",    icon: "🍞", name: "Bread winner",      description: "Feed the duck 10 times",     test: s => s.fed >= 10},
     // Meta
     {id: "completionist", icon: "🏅", name: "Completionist", description: "Unlock every other achievement", meta: true}
 ]
@@ -55,6 +59,9 @@ function emptyStats() {
         total: 0,
         daily: {},          // { "2026-10-09": 12, ... } in local time
         lastQuack: "",
+        fed: 0,             // times the duck was fed (popout button; added in 0.6.0)
+        history: [],        // recent quacks, newest first: {text, at, last, count}
+                            // (added in 0.6.0; older saves start empty)
         achievements: [],   // ids of unlocked achievements
         unlockedAt: {}      // { id: ms timestamp }; added in 0.4.0, so older
                             // unlocks have no date (no migration needed)
@@ -73,6 +80,14 @@ function normalize(raw) {
             if (Number.isInteger(raw.daily[day]) && raw.daily[day] > 0)
                 s.daily[day] = raw.daily[day]
     s.lastQuack = typeof raw.lastQuack === "string" ? raw.lastQuack : ""
+    s.fed = Number.isInteger(raw.fed) && raw.fed > 0 ? raw.fed : 0
+    if (Array.isArray(raw.history))
+        s.history = raw.history
+            .filter(h => h && typeof h.text === "string" && Number.isFinite(h.at))
+            .map(h => ({text: h.text, at: h.at,
+                        last: Number.isFinite(h.last) ? h.last : h.at,
+                        count: Number.isInteger(h.count) && h.count > 0 ? h.count : 1}))
+            .slice(0, HISTORY_SIZE)
     if (Array.isArray(raw.achievements))
         s.achievements = raw.achievements.filter(id => ACHIEVEMENTS.some(a => a.id === id))
     if (raw.unlockedAt && typeof raw.unlockedAt === "object")
@@ -111,8 +126,16 @@ function summary(stats, now) {
         total: stats.total,
         today: stats.daily[dayKey(now)] || 0,
         streak: streak(stats, now),
-        lastQuack: stats.lastQuack
+        lastQuack: stats.lastQuack,
+        fed: stats.fed
     }
+}
+
+// Returns a new stats object with the duck fed once more.
+function feed(stats) {
+    const s = normalize(stats)
+    s.fed += 1
+    return s
 }
 
 // Returns a new stats object with one more quack. Never mutates the input:
@@ -123,6 +146,17 @@ function record(stats, text, now) {
     s.total += 1
     s.daily[today] = (s.daily[today] || 0) + 1
     s.lastQuack = text
+    // Rapid quacks with the same text (combos) merge into one entry ×N, so a
+    // long combo doesn't push everything else out of the history.
+    const t = now.getTime()
+    const latest = s.history[0]
+    if (latest && latest.text === text && t - latest.last <= HISTORY_MERGE_MS) {
+        latest.count += 1
+        latest.last = t
+    } else {
+        s.history.unshift({text: text, at: t, last: t, count: 1})
+        s.history = s.history.slice(0, HISTORY_SIZE)
+    }
     const oldest = dayKey(addDays(now, -KEEP_DAYS))
     for (const day in s.daily)
         if (day < oldest)

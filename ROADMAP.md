@@ -107,7 +107,6 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [ ] 🟡 **Evolution**: the bird evolves with level (🥚 → 🐣 → 🐥 → 🦆 → 🦢), unless a bird is picked in settings
 - [ ] 🟡 **Daily goal**: "Quack 10 times today", progress in the tooltip, small celebration toast
 - [ ] 🔴 **Weekly quests**: 3 random goals per week, rerolled every Monday. *Learns:* seeded randomness by week number
-- [ ] 🔴 **Achievement gallery** in the popout (pairs with 0.6.0)
 - [ ] 🟡 **Unlock sound / animation** (pairs with 0.7.0 & 0.8.0)
 - [ ] 🟢 **Export / import stats** as JSON. *Learns:* `FileView`, clipboard
 
@@ -120,12 +119,13 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [x] 🟢 **Toast levels**: warning at combo ×10, error at ×25. *Learns:* `ToastService.showWarning` / `showError`
 - [x] 🟢 🌀💥☄️ **Combo achievements** (×10, ×25, ×100). *Learns:* passing click context to achievement checks (`test(summary, now, ctx)`), additive again
 
-## 0.6.0 — Popout
+## 0.6.0 — Popout ✅
 
-- [ ] 🟡 **Popout window** on click with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
-- [ ] 🟡 **Pond view**: several ducks swimming in the popout. *Learns:* QML layouts in popouts
-- [ ] 🟡 **Quack history** list in the popout. *Learns:* `ListView`, models, scrolling
-- [ ] 🟢 **Buttons in the popout** (feed the duck, reset). *Learns:* DMS button widgets, closing the popout from code
+- [x] 🟡 **Achievements tab** in the popout (reuses `AchievementList.qml`). *Learns:* tabs with `DankButtonGroup`, scrolling with `DankFlickable`
+- [x] 🟡 **Popout window** (right-click by default) with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
+- [x] 🟡 **Pond view**: one swimming bird per quack today. *Learns:* `Repeater`, looping `SequentialAnimation`, mirroring with `Scale`, pausing animations when hidden
+- [x] 🟡 **Quack history** list in the popout. *Learns:* `DankListView` with a JS array model, additive `history` data, merging combo entries
+- [x] 🟢 **Buttons in the popout**: feed (🍞 achievement at 10), random bird, settings. *Learns:* `DankButton`, `closePopout()` injected into `PopoutComponent`, `popoutService` (injected only if declared)
 
 ## 0.7.0 — Animation & looks
 
@@ -200,7 +200,7 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`ListSettingWithInput` saves an array of objects** keyed by field `id` (`[{text: "Quack!"}, …]`), not plain strings.
 - **`pluginData` updates live**: bindings like `pluginData.quackDuration || 1500` re-evaluate as soon as a setting changes, so you don't need a reload.
 - **No built-in reset / delete-key API** for plugin settings. But every `*Setting` exposes `settingKey` + `defaultValue`, so a reset can loop over `content` and `saveValue()` each default. `savePluginData` emits `pluginDataChanged`, which makes `PluginSettings` reload every control.
-- **`plugins reload` alternates success/failure** once the plugin imports a sibling file (`import "X.js"`, or another `.qml` used as a type). The error is a misleading *File name case mismatch*. It happens with a symlink or a real folder, with any file name, with or without `.pragma library`. Startup and enable/disable load fine, so only the dev loop is affected: `dev.sh reload` retries once.
+- **`plugins reload` doesn't reload sibling files.** DMS busts the cache with `?t=<now>` on the entry `.qml` only; relative imports drop the query, so imported `.js` and sibling `.qml` come back from Qt's cache (checked: a `console.log` added to `Input.js` never ran after reloads). Files added since the last load can fail once with a misleading *File name case mismatch* / *is not a type*. Unit tests read the files directly, so they're unaffected. For a truly fresh reload, load the plugin from a never-seen directory: that's what the Reloader plugin does (a symlink farm in `~/.cache/DankMaterialShell/reloader/`). Its farm is a snapshot: files added afterwards are missing until the next Reloader reload or a `plugin-scan rescan`.
 - **Settings vs state.** `savePluginData` = user *settings* (in DMS's settings file, edited by the settings page). `savePluginState` = runtime *data* (counters, history) in `~/.local/state/DankMaterialShell/plugins/duck_state.json`. Writes are batched by a timer, and `pluginStateChanged(id)` fires so other instances/the settings page can refresh.
 - **Bar tooltips**: `DankTooltipV2` draws inside the widget's own window (clipped by the bar). Bar widgets use `DankTooltip` in a `Loader`, which is its own layer window placed in screen coordinates; compute the position from `axis.edge`, `barThickness`, `barSpacing`, `parentScreen` (see DMS's `Vpn.qml`).
 - **Change saved data by adding, not reshaping**: unlock dates went into a new `unlockedAt` map next to the existing `achievements` id list. Old saves just lack the map, so no migration code is needed. A test loads a simulated 0.3.0 save to prove it.
@@ -211,5 +211,7 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **Wheel deltas**: a mouse notch is `angleDelta` 120, but touchpads send many small deltas. Accumulate and step once per 120, or a touchpad flips through everything.
 - **Combos beat double-clicks**: a double-click handler must wait (~250 ms) after every click to see if a second one follows, so single clicks feel laggy. Counting rapid clicks with timestamps reacts instantly, and a pure `nextCombo(combo, lastMs, nowMs)` is trivial to test.
 - **`capabilities` is required** by DMS's `plugin-schema.json` (and for publishing), even though plugins load without it. It's a free-form list; bar widgets use `["dankbar-widget"]`. CI now checks every schema-required field.
+- **`pillClickAction` overrides the popout**: with a click action set, DMS never opens the plugin's popout, and `triggerPopout()` runs the click action instead. To open it from another button, clear `pillClickAction`, call `triggerPopout()`, then restore it (assigned imperatively, not as a binding). The popout sizes itself to the content's `implicitHeight`.
+- **Looping animations read their targets when a loop starts**: don't make `to:` depend on state the loop itself flips. Use fixed legs (there, turn, back, turn), and wait for a non-zero size before `running`.
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.5–0.10.
