@@ -40,7 +40,7 @@ Try every settings widget DMS offers.
 
 ## 0.4.0 — Achievements+ ✅
 
-From 7 to 22 achievements, plus secret ones and unlock dates.
+From 7 to 21 achievements, plus secret ones and unlock dates.
 
 **A. Milestones & streaks** (fit the existing stats)
 - [x] 🟢 🎲 **The answer**: 42 quacks
