@@ -8,6 +8,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-09
+
 ### Added
 - 6 new milestone and streak achievements: 🎲 The answer (42), 😈 Devil's quack (666), 🕶️ Leet quacker (1337), 🌪️ Quack frenzy (100 in one day), 📅 Fortnight flock (14-day streak), 🗓️ Monthly migration (30-day streak).
 - 7 time and calendar achievements: 🦉 Night owl, 🐓 Early bird, 🎆 Happy new quack, 💘 Love quack, 🐸 Leap duck, 🎃 Spooky quack, 🎄 Jingle quack.
@@ -49,7 +51,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Settings: custom quack text, toast toggle.
 - `dev.sh` helper to link, reload and check the plugin status.
 
-[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Gamen0ut/Duck/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Gamen0ut/Duck/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Gamen0ut/Duck/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Gamen0ut/Duck/releases/tag/v0.1.0
