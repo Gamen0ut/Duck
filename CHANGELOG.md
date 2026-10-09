@@ -10,6 +10,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ### Fixed
 - Birds in the pond no longer swim on top of each other: 6 lanes instead of 4, and birds sharing a lane start from opposite sides.
+- Settings: "Custom quack color" now sits right above the color picker it controls.
 
 ## [0.6.0] - 2026-10-09
 

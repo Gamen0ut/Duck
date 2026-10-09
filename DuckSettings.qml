@@ -95,16 +95,16 @@ PluginSettings {
     }
 
     ToggleSetting {
-        settingKey: "useCustomColor"
-        label: "Custom quack color"
-        description: "Use the color below instead of the theme accent"
+        settingKey: "showCounter"
+        label: "Show quack counter"
+        description: "Show the total number of quacks next to the duck"
         defaultValue: false
     }
 
     ToggleSetting {
-        settingKey: "showCounter"
-        label: "Show quack counter"
-        description: "Show the total number of quacks next to the duck"
+        settingKey: "useCustomColor"
+        label: "Custom quack color"
+        description: "Use the color below instead of the theme accent"
         defaultValue: false
     }
 
