@@ -8,6 +8,13 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Added
+- Popout window: a big duck you can click (combos too) and your stats at a glance.
+- "Left-click" setting: quack (default) or open the popout. "Open popout" is also available for right- and middle-click.
+
+### Changed
+- Right-click now opens the popout by default (was: silent quack). Pick "Silent quack" in Settings → Mouse to get it back.
+
 ## [0.5.0] - 2026-10-09
 
 ### Added

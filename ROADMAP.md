@@ -122,7 +122,7 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 
 ## 0.6.0 — Popout
 
-- [ ] 🟡 **Popout window** on click with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
+- [x] 🟡 **Popout window** (right-click by default) with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
 - [ ] 🟡 **Pond view**: several ducks swimming in the popout. *Learns:* QML layouts in popouts
 - [ ] 🟡 **Quack history** list in the popout. *Learns:* `ListView`, models, scrolling
 - [ ] 🟢 **Buttons in the popout** (feed the duck, reset). *Learns:* DMS button widgets, closing the popout from code
@@ -211,5 +211,6 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **Wheel deltas**: a mouse notch is `angleDelta` 120, but touchpads send many small deltas. Accumulate and step once per 120, or a touchpad flips through everything.
 - **Combos beat double-clicks**: a double-click handler must wait (~250 ms) after every click to see if a second one follows, so single clicks feel laggy. Counting rapid clicks with timestamps reacts instantly, and a pure `nextCombo(combo, lastMs, nowMs)` is trivial to test.
 - **`capabilities` is required** by DMS's `plugin-schema.json` (and for publishing), even though plugins load without it. It's a free-form list; bar widgets use `["dankbar-widget"]`. CI now checks every schema-required field.
+- **`pillClickAction` overrides the popout**: with a click action set, DMS never opens the plugin's popout, and `triggerPopout()` runs the click action instead. To open it from another button, clear `pillClickAction`, call `triggerPopout()`, then restore it (assigned imperatively, not as a binding). The popout sizes itself to the content's `implicitHeight`.
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.5–0.10.

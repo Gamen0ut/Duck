@@ -4,8 +4,15 @@
 
 var WHEEL_NOTCH = 120 // angleDelta of one mouse-wheel notch
 
+// What a left-click does (SelectionSetting options).
+var LEFT_CLICK_ACTIONS = [
+    {label: "Quack", value: "quack"},
+    {label: "Open popout", value: "popout"}
+]
+
 // Actions a right- or middle-click can run (SelectionSetting options).
 var CLICK_ACTIONS = [
+    {label: "Open popout", value: "popout"},
     {label: "Silent quack (no toast)", value: "silent"},
     {label: "Random bird", value: "randomBird"},
     {label: "Show stats", value: "stats"},

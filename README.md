@@ -8,7 +8,8 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 
 - Works in horizontal and vertical bars
 - Click the duck → it shows the quack text (duration is configurable)
-- Right-click / middle-click: silent quack, random bird or stats (configurable)
+- Right-click opens a popout with a big duck and your stats
+- Right-click / middle-click / left-click actions are configurable (popout, silent quack, random bird, stats)
 - Click fast for combos: "Quack! ×3"… and see what happens at ×10 and ×25
 - Pick your bird: 🦆 🐤 🐥 🐣 🦢 (in settings, or scroll over the duck)
 - Custom quack color, or follow the theme accent
@@ -43,7 +44,8 @@ Download `Duck-vX.Y.Z.zip` from [Releases](https://github.com/Gamen0ut/Duck/rele
 | Setting                    | Key                     | Default      | Description                                     |
 |----------------------------|-------------------------|--------------|-------------------------------------------------|
 | Duck                       | `duckEmoji`             | `🦆`         | Which bird lives in your bar                    |
-| Right-click                | `rightClickAction`      | `silent`     | `silent`, `randomBird`, `stats` or `none`       |
+| Left-click                 | `leftClickAction`       | `quack`      | `quack` or `popout`                             |
+| Right-click                | `rightClickAction`      | `popout`     | `popout`, `silent`, `randomBird`, `stats` or `none` |
 | Middle-click               | `middleClickAction`     | `randomBird` | same choices as right-click                     |
 | Scroll to change bird      | `scrollChangesBird`     | `true`       | Mouse wheel over the duck switches birds        |
 | Hide duck while quacking   | `hideEmojiWhenQuacking` | `false`      | Only show the quack text during a quack         |

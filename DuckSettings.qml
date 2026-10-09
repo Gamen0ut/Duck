@@ -172,11 +172,19 @@ PluginSettings {
     }
 
     SelectionSetting {
+        settingKey: "leftClickAction"
+        label: "Left-click"
+        description: "What a left-click on the duck does"
+        options: Input.LEFT_CLICK_ACTIONS
+        defaultValue: "quack"
+    }
+
+    SelectionSetting {
         settingKey: "rightClickAction"
         label: "Right-click"
         description: "What a right-click on the duck does"
         options: Input.CLICK_ACTIONS
-        defaultValue: "silent"
+        defaultValue: "popout"
     }
 
     SelectionSetting {
