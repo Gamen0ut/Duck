@@ -13,6 +13,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Hover tooltip on the duck with your quack stats.
 - "Show quack counter" option to display the total next to the duck.
 - The last quack text is remembered across restarts.
+- 7 achievements (🥚 first quack, 🐣 10, 🦆 100, 👑 1000, ⚡ 25 in a day, 🔥 3-day and 🏆 7-day streaks), with a toast when unlocked.
 
 ## [0.2.0] - 2026-10-09
 

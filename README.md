@@ -13,6 +13,7 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 - Random quacks from your own phrase list
 - Optional toast notification on every quack
 - Quack stats (total, today, streak) in a hover tooltip, with an optional counter in the bar
+- 7 achievements to unlock 🏅
 
 ## Requirements
 

@@ -50,7 +50,14 @@ PluginComponent {
     }
 
     function recordQuack() {
-        stats = Stats.record(stats, currentQuack, new Date())
+        const now = new Date()
+        stats = Stats.record(stats, currentQuack, now)
+        const unlocked = Stats.newlyUnlocked(stats, now)
+        if (unlocked.length > 0) {
+            stats = Stats.unlock(stats, unlocked)
+            for (const a of unlocked)
+                ToastService.showInfo(a.icon + " Achievement unlocked: " + a.name, a.description)
+        }
         if (pluginService)
             pluginService.savePluginState(stateId, "stats", stats)
     }
@@ -60,6 +67,7 @@ PluginComponent {
         let text = duckEmoji + " " + s.total + (s.total === 1 ? " quack" : " quacks") + " · " + s.today + " today"
         if (s.streak > 1)
             text += " · 🔥 " + s.streak + "-day streak"
+        text += " · 🏅 " + stats.achievements.length + "/" + Stats.ACHIEVEMENTS.length
         return text
     }
 

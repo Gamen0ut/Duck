@@ -6,11 +6,24 @@
 
 const KEEP_DAYS = 90 // per-day history older than this is dropped
 
+// `test` receives summary(stats, now). `var`, not `const`: only `var` is
+// visible from QML as Stats.ACHIEVEMENTS.
+var ACHIEVEMENTS = [
+    {id: "first",   icon: "🥚", name: "First quack",      description: "Quack once",                 test: s => s.total >= 1},
+    {id: "q10",     icon: "🐣", name: "Chatty duckling",  description: "Quack 10 times",             test: s => s.total >= 10},
+    {id: "q100",    icon: "🦆", name: "Seasoned quacker", description: "Quack 100 times",            test: s => s.total >= 100},
+    {id: "q1000",   icon: "👑", name: "Duck royalty",     description: "Quack 1000 times",           test: s => s.total >= 1000},
+    {id: "day25",   icon: "⚡", name: "Quack attack",     description: "Quack 25 times in one day",  test: s => s.today >= 25},
+    {id: "streak3", icon: "🔥", name: "On a roll",        description: "Quack 3 days in a row",      test: s => s.streak >= 3},
+    {id: "streak7", icon: "🏆", name: "Weekly waddle",    description: "Quack 7 days in a row",      test: s => s.streak >= 7}
+]
+
 function emptyStats() {
     return {
         total: 0,
         daily: {},          // { "2026-10-09": 12, ... } in local time
-        lastQuack: ""
+        lastQuack: "",
+        achievements: []    // ids of unlocked achievements
     }
 }
 
@@ -26,6 +39,8 @@ function normalize(raw) {
             if (Number.isInteger(raw.daily[day]) && raw.daily[day] > 0)
                 s.daily[day] = raw.daily[day]
     s.lastQuack = typeof raw.lastQuack === "string" ? raw.lastQuack : ""
+    if (Array.isArray(raw.achievements))
+        s.achievements = raw.achievements.filter(id => ACHIEVEMENTS.some(a => a.id === id))
     return s
 }
 
@@ -74,5 +89,20 @@ function record(stats, text, now) {
     for (const day in s.daily)
         if (day < oldest)
             delete s.daily[day]
+    return s
+}
+
+// Achievements whose condition is now met but that aren't unlocked yet.
+function newlyUnlocked(stats, now) {
+    const sum = summary(stats, now)
+    return ACHIEVEMENTS.filter(a => stats.achievements.indexOf(a.id) === -1 && a.test(sum))
+}
+
+// Returns a new stats object with those achievements marked as unlocked.
+function unlock(stats, achievements) {
+    const s = normalize(stats)
+    for (const a of achievements)
+        if (s.achievements.indexOf(a.id) === -1)
+            s.achievements.push(a.id)
     return s
 }

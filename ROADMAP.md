@@ -35,7 +35,7 @@ Try every settings widget DMS offers.
 - [x] 🟢 **Quack counter** shown in the pill or tooltip. *Learns:* `savePluginState` / `loadPluginState`, `pluginStateChanged`, `DankTooltip`
 - [ ] 🟢 **Reset counter** button in settings. *Learns:* writing data from the settings page
 - [x] 🟡 **Daily stats**: quacks per day, current streak. *Learns:* storing structured JSON, dates (local-time day keys, pruning old days)
-- [ ] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
+- [x] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
 - [x] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
 
 ## 0.4.0 — Interaction
@@ -129,6 +129,7 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`plugins reload` alternates success/failure** once the plugin imports a sibling file (`import "X.js"`, or another `.qml` used as a type). The error is a misleading *File name case mismatch*. It happens with a symlink or a real folder, with any file name, with or without `.pragma library`. Startup and enable/disable load fine, so only the dev loop is affected: `dev.sh reload` retries once.
 - **Settings vs state.** `savePluginData` = user *settings* (in DMS's settings file, edited by the settings page). `savePluginState` = runtime *data* (counters, history) in `~/.local/state/DankMaterialShell/plugins/duck_state.json`. Writes are batched by a timer, and `pluginStateChanged(id)` fires so other instances/the settings page can refresh.
 - **Bar tooltips**: `DankTooltipV2` draws inside the widget's own window (clipped by the bar). Bar widgets use `DankTooltip` in a `Loader`, which is its own layer window placed in screen coordinates; compute the position from `axis.edge`, `barThickness`, `barSpacing`, `parentScreen` (see DMS's `Vpn.qml`).
+- **Only `var` is exported from a JS library**: QML sees `Stats.ACHIEVEMENTS` only if it's declared with `var`, not `const`/`let`.
 - **Keep logic in a `.pragma library` JS file** to unit-test it with `node` (strip the pragma line first).
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.4–0.9.
