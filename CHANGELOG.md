@@ -8,6 +8,9 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Fixed
+- Popout and pond emoji sizes follow the DMS font scale instead of fixed pixel sizes (same size at the default scale).
+
 ## [0.6.1] - 2026-10-09
 
 ### Fixed
