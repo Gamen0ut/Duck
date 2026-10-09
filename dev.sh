@@ -34,7 +34,7 @@ case "$1" in
     dms screenshot last --dir "$DIR/Pictures" --filename "$name.png" --no-clipboard ;;
   record)
     # Records a region to Pictures/<name>.gif: select the region, then 3 s
-    # to open the popout, then <seconds> of recording (default 6), converted
+    # to open the popout, then <seconds> of recording (default 7), converted
     # with an optimised palette (15 fps, 480 px wide). Needs wf-recorder.
     name="$2"; secs="${3:-7}"
     [ -n "$name" ] || { echo "Usage: $0 record <name> [seconds]"; exit 1; }
