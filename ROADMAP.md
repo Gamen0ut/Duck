@@ -64,6 +64,7 @@ From 7 to 22 achievements, plus secret ones and unlock dates.
 - [x] 🟡 🏅 **Completionist**: unlock every other achievement (must not count itself)
 - [x] 🟢 **Unlock dates** in settings. *Learns:* additive data changes (a new `unlockedAt` map, so old saves need no migration)
 - [x] 🟢 **Grouped toast** when more than 2 achievements unlock at once
+- [x] 🟢 **"Achievement toasts" setting**: grouped / one per achievement / off (your request after testing). *Learns:* `SelectionSetting` driving logic, missing keys falling back to the default
 
 ## Achievement backlog
 

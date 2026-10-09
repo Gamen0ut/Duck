@@ -177,6 +177,14 @@ test("1-2 unlocks get their own toast, more are grouped into one", () => {
     same(S.unlockToasts([a, b, c]), [{title: "🏅 3 achievements unlocked!", details: "🥚 First quack · 🐣 Chatty duckling · 🎲 The answer"}])
 })
 
+test("achievement toast modes: separate always splits, off shows nothing", () => {
+    const three = S.ACHIEVEMENTS.slice(0, 3)
+    assert.strictEqual(S.unlockToasts(three, "separate").length, 3)
+    assert.strictEqual(S.unlockToasts(three, "grouped").length, 1)
+    assert.strictEqual(S.unlockToasts(three, undefined).length, 1, "unknown/missing mode behaves like grouped")
+    same(S.unlockToasts(three, "off"), [])
+})
+
 test("achievement ids are unique", () => {
     const all = ids(S.ACHIEVEMENTS)
     assert.strictEqual(new Set(all).size, all.length)

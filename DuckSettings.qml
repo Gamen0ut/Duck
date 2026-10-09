@@ -182,6 +182,18 @@ PluginSettings {
         defaultValue: true
     }
 
+    SelectionSetting {
+        settingKey: "achievementToasts"
+        label: "Achievement toasts"
+        description: "How unlocked achievements are announced"
+        options: [
+            {label: "Grouped when more than 2", value: "grouped"},
+            {label: "One toast per achievement", value: "separate"},
+            {label: "Off", value: "off"}
+        ]
+        defaultValue: "grouped"
+    }
+
     // ── Stats ─────────────────────────────────────────────
 
     StyledText {

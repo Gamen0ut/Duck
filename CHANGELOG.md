@@ -14,6 +14,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Secret achievements: the calendar ones show as "🔒 ???" in settings until unlocked.
 - 🏅 Completionist: unlock every other achievement.
 - Unlock dates shown in the settings achievement list (for achievements unlocked from now on).
+- "Achievement toasts" setting: grouped when more than 2, one toast per achievement, or off.
 
 ### Changed
 - When more than 2 achievements unlock at once, they're announced in a single toast.

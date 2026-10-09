@@ -50,6 +50,7 @@ Download `Duck-vX.Y.Z.zip` from [Releases](https://github.com/Gamen0ut/Duck/rele
 | Random quacks              | `randomQuack`           | `false`      | Pick a random phrase from the list              |
 | Quack phrases              | `quackPhrases`          | `[]`         | Phrases used when random quacks are on          |
 | Show toast                 | `showToast`             | `true`       | Also pop a notification on each quack           |
+| Achievement toasts         | `achievementToasts`     | `grouped`    | `grouped` (when more than 2), `separate` or `off` |
 
 ## Development
 
