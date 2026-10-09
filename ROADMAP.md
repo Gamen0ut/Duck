@@ -30,19 +30,82 @@ Try every settings widget DMS offers.
 - [x] 🟢 **Reset to defaults** button with click-twice confirmation. *Learns:* `DankButton`, iterating `PluginSettings.content`, `saveValue`
 - [x] 🟡 **Settings sections** with headers and descriptions. *Learns:* settings page layout, `StyledText`, spacing tokens
 
-## 0.3.0 — State & persistence
+## 0.3.0 — State & persistence ✅
 
-- [ ] 🟢 **Quack counter** shown in the pill or tooltip. *Learns:* `PluginService.savePluginData` / `loadPluginData`
-- [ ] 🟢 **Reset counter** button in settings. *Learns:* writing data from the settings page
-- [ ] 🟡 **Daily stats**: quacks per day, current streak. *Learns:* storing structured JSON, dates
-- [ ] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
-- [ ] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
+- [x] 🟢 **Quack counter** shown in the pill or tooltip. *Learns:* `savePluginState` / `loadPluginState`, `pluginStateChanged`, `DankTooltip`
+- [x] 🟢 **Reset counter** button in settings. *Learns:* reading/clearing plugin state from the settings page, `clearPluginState`
+- [x] 🟡 **Daily stats**: quacks per day, current streak. *Learns:* storing structured JSON, dates (local-time day keys, pruning old days)
+- [x] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
+- [x] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
+
+## 0.3.x — More achievements & milestones
+
+New achievements are mostly one line in `DuckStats.js` plus a unit test. Some need data we don't track yet (noted in *Needs*).
+
+### Milestones (total quacks)
+
+- [ ] 🟢 🎲 **The answer**: quack 42 times
+- [ ] 🟢 🕶️ **Leet quacker**: quack 1337 times
+- [ ] 🟢 💎 **Quackillionaire**: 5 000 quacks
+- [ ] 🟢 🌌 **Duck singularity**: 10 000 quacks
+
+### Daily & streaks
+
+- [ ] 🟢 🌪️ **Quack frenzy**: 100 quacks in one day
+- [ ] 🟢 📅 **Fortnight flock**: 14-day streak
+- [ ] 🟢 🗓️ **Monthly migration**: 30-day streak
+- [ ] 🟢 🏛️ **Century pond**: 100-day streak
+- [ ] 🟡 🌍 **Year of the duck**: 365-day streak. *Needs:* keep more than 90 days of history, or store `bestStreak` / `currentStreakStart` instead of recomputing
+- [ ] 🟡 🗂️ **Every day of the week**: quack at least once on each weekday. *Learns:* `Date.getDay()`
+
+### Time of day & calendar
+
+- [ ] 🟢 🦉 **Night owl**: quack between 00:00 and 04:00
+- [ ] 🟢 🐓 **Early bird**: quack between 05:00 and 07:00
+- [ ] 🟢 🎆 **Happy new quack**: quack on January 1st
+- [ ] 🟢 🎃 **Spooky quack**: quack on October 31st
+- [ ] 🟢 🎄 **Jingle quack**: quack on December 25th
+- [ ] 🟢 🐸 **Leap duck**: quack on February 29th
+- [ ] 🟡 ⏱️ **Exactly midnight**: quack at 00:00 on the dot. *Learns:* `achievement tests` that need the full `Date`, not just the summary
+
+### Speed & behavior
+
+- [ ] 🟡 ⚡ **Quack storm**: 10 quacks in 5 seconds. *Needs:* timestamps of recent quacks (in memory only, no need to persist)
+- [ ] 🟡 🐢 **Patience**: quack after not quacking for 7 days. *Needs:* `lastQuackAt` timestamp
+- [ ] 🟡 🔄 **Prodigal duck**: come back after a 30-day break
+- [ ] 🟡 🖥️ **Multi-monitor duck**: quack from two different bars/screens. *Learns:* `parentScreen.name`, multiple instances
+
+### Settings-based (playing with the plugin itself)
+
+- [ ] 🟡 🐦 **Bird watcher**: quack with every bird (🦆 🐤 🐥 🐣 🦢). *Needs:* set of birds used
+- [ ] 🟡 ✍️ **Poet**: have 10 phrases in the random list. *Learns:* reading settings (`pluginData`) inside achievement checks
+- [ ] 🟡 🤫 **Silent duck**: 50 quacks with toasts turned off
+- [ ] 🟡 🎨 **Fashionista**: change the quack color 5 times
+- [ ] 🟢 🧹 **Fresh start**: reset your stats (the unlock survives the reset!). *Learns:* keeping some state through `clearPluginState`
+
+### Meta
+
+- [ ] 🟢 🏅 **Completionist**: unlock every other achievement
+- [ ] 🟡 🥚 **Secret achievements**: hidden (`???`) in settings until unlocked. *Learns:* `hidden: true` flag in the achievement list
+
+### Systems around achievements
+
+- [ ] 🟡 **Progress bars** in settings (`63 / 100 quacks`). *Learns:* `progress(summary)` next to `test(summary)`, DMS progress widgets
+- [ ] 🟢 **Unlock date** shown under each achievement. *Learns:* storing `{id, at}` instead of plain ids (with migration in `normalize`)
+- [ ] 🟡 **Tiers** 🥉🥈🥇 for the same goal (100 / 1000 / 10 000). *Learns:* data-driven achievement definitions
+- [ ] 🟡 **Duck levels & XP**: each quack gives XP, level shown in the tooltip (Lv. 1 duckling → Lv. 10 legendary). *Learns:* derived state, curves
+- [ ] 🟡 **Evolution**: the bird evolves with level (🥚 → 🐣 → 🐥 → 🦆 → 🦢), unless a bird is picked in settings
+- [ ] 🟡 **Daily goal**: "Quack 10 times today", progress in the tooltip, small celebration toast
+- [ ] 🔴 **Weekly quests**: 3 random goals per week, rerolled every Monday. *Learns:* seeded randomness by week number
+- [ ] 🔴 **Achievement gallery** in the popout (pairs with 0.5.0)
+- [ ] 🟡 **Unlock sound / animation** (pairs with 0.6.0 & 0.7.0)
+- [ ] 🟢 **Export / import stats** as JSON. *Learns:* `FileView`, clipboard
 
 ## 0.4.0 — Interaction
 
 - [ ] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `MouseArea.acceptedButtons`
 - [ ] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`
-- [ ] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
+- [x] 🟢 **Hover tooltip** with stats. *Learns:* DMS tooltip components
 - [ ] 🟡 **Double-click** = "QUACK QUACK" combo. *Learns:* click timing, gesture disambiguation
 - [ ] 🟢 **Toast levels**: info / warning / error depending on mood. *Learns:* `ToastService` variants
 
@@ -126,5 +189,10 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`ListSettingWithInput` saves an array of objects** keyed by field `id` (`[{text: "Quack!"}, …]`), not plain strings.
 - **`pluginData` updates live**: bindings like `pluginData.quackDuration || 1500` re-evaluate as soon as a setting changes, so you don't need a reload.
 - **No built-in reset / delete-key API** for plugin settings. But every `*Setting` exposes `settingKey` + `defaultValue`, so a reset can loop over `content` and `saveValue()` each default. `savePluginData` emits `pluginDataChanged`, which makes `PluginSettings` reload every control.
+- **`plugins reload` alternates success/failure** once the plugin imports a sibling file (`import "X.js"`, or another `.qml` used as a type). The error is a misleading *File name case mismatch*. It happens with a symlink or a real folder, with any file name, with or without `.pragma library`. Startup and enable/disable load fine, so only the dev loop is affected: `dev.sh reload` retries once.
+- **Settings vs state.** `savePluginData` = user *settings* (in DMS's settings file, edited by the settings page). `savePluginState` = runtime *data* (counters, history) in `~/.local/state/DankMaterialShell/plugins/duck_state.json`. Writes are batched by a timer, and `pluginStateChanged(id)` fires so other instances/the settings page can refresh.
+- **Bar tooltips**: `DankTooltipV2` draws inside the widget's own window (clipped by the bar). Bar widgets use `DankTooltip` in a `Loader`, which is its own layer window placed in screen coordinates; compute the position from `axis.edge`, `barThickness`, `barSpacing`, `parentScreen` (see DMS's `Vpn.qml`).
+- **Only `var` is exported from a JS library**: QML sees `Stats.ACHIEVEMENTS` only if it's declared with `var`, not `const`/`let`.
+- **Keep logic in a `.pragma library` JS file** to unit-test it with `node`: see `tests/DuckStats.test.js` (strips the pragma, evaluates in a `vm` sandbox; compare results as plain JSON).
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
 - **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.4–0.9.

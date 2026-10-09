@@ -1,0 +1,108 @@
+.pragma library
+
+// Pure quack-statistics logic: no QML, no DMS services, so it can be tested
+// with node. Stats are stored as one object in the plugin *state*
+// (pluginService.savePluginState("duck", "stats", ...)), not in settings.
+
+const KEEP_DAYS = 90 // per-day history older than this is dropped
+
+// `test` receives summary(stats, now). `var`, not `const`: only `var` is
+// visible from QML as Stats.ACHIEVEMENTS.
+var ACHIEVEMENTS = [
+    {id: "first",   icon: "🥚", name: "First quack",      description: "Quack once",                 test: s => s.total >= 1},
+    {id: "q10",     icon: "🐣", name: "Chatty duckling",  description: "Quack 10 times",             test: s => s.total >= 10},
+    {id: "q100",    icon: "🦆", name: "Seasoned quacker", description: "Quack 100 times",            test: s => s.total >= 100},
+    {id: "q1000",   icon: "👑", name: "Duck royalty",     description: "Quack 1000 times",           test: s => s.total >= 1000},
+    {id: "day25",   icon: "⚡", name: "Quack attack",     description: "Quack 25 times in one day",  test: s => s.today >= 25},
+    {id: "streak3", icon: "🔥", name: "On a roll",        description: "Quack 3 days in a row",      test: s => s.streak >= 3},
+    {id: "streak7", icon: "🏆", name: "Weekly waddle",    description: "Quack 7 days in a row",      test: s => s.streak >= 7}
+]
+
+function emptyStats() {
+    return {
+        total: 0,
+        daily: {},          // { "2026-10-09": 12, ... } in local time
+        lastQuack: "",
+        achievements: []    // ids of unlocked achievements
+    }
+}
+
+// Accepts whatever was loaded from disk and fills in missing fields, so old
+// or hand-edited state files can't break the widget.
+function normalize(raw) {
+    const s = emptyStats()
+    if (!raw || typeof raw !== "object")
+        return s
+    s.total = Number.isInteger(raw.total) && raw.total > 0 ? raw.total : 0
+    if (raw.daily && typeof raw.daily === "object")
+        for (const day in raw.daily)
+            if (Number.isInteger(raw.daily[day]) && raw.daily[day] > 0)
+                s.daily[day] = raw.daily[day]
+    s.lastQuack = typeof raw.lastQuack === "string" ? raw.lastQuack : ""
+    if (Array.isArray(raw.achievements))
+        s.achievements = raw.achievements.filter(id => ACHIEVEMENTS.some(a => a.id === id))
+    return s
+}
+
+function dayKey(date) {
+    const pad = n => (n < 10 ? "0" : "") + n
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate())
+}
+
+function addDays(date, n) {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    d.setDate(d.getDate() + n)
+    return d
+}
+
+// Consecutive days with at least one quack, ending today. If you haven't
+// quacked yet today, a streak ending yesterday still counts (it's not lost
+// until the day is over).
+function streak(stats, now) {
+    let day = (stats.daily[dayKey(now)] || 0) > 0 ? now : addDays(now, -1)
+    let count = 0
+    while ((stats.daily[dayKey(day)] || 0) > 0) {
+        count++
+        day = addDays(day, -1)
+    }
+    return count
+}
+
+function summary(stats, now) {
+    return {
+        total: stats.total,
+        today: stats.daily[dayKey(now)] || 0,
+        streak: streak(stats, now),
+        lastQuack: stats.lastQuack
+    }
+}
+
+// Returns a new stats object with one more quack. Never mutates the input:
+// the object loaded from PluginService is its cached copy.
+function record(stats, text, now) {
+    const s = normalize(stats)
+    const today = dayKey(now)
+    s.total += 1
+    s.daily[today] = (s.daily[today] || 0) + 1
+    s.lastQuack = text
+    const oldest = dayKey(addDays(now, -KEEP_DAYS))
+    for (const day in s.daily)
+        if (day < oldest)
+            delete s.daily[day]
+    return s
+}
+
+// Achievements whose condition is now met but that aren't unlocked yet.
+function newlyUnlocked(stats, now) {
+    const sum = summary(stats, now)
+    return ACHIEVEMENTS.filter(a => stats.achievements.indexOf(a.id) === -1 && a.test(sum))
+}
+
+// Returns a new stats object with those achievements marked as unlocked.
+function unlock(stats, achievements) {
+    const s = normalize(stats)
+    for (const a of achievements)
+        if (s.achievements.indexOf(a.id) === -1)
+            s.achievements.push(a.id)
+    return s
+}

@@ -25,7 +25,7 @@ jobs:
       - name: Build archive
         run: |
           mkdir -p dist/Duck
-          cp plugin.json *.qml LICENSE README.md dist/Duck/
+          cp plugin.json *.qml *.js LICENSE README.md dist/Duck/
           (cd dist && zip -r "Duck-${GITHUB_REF_NAME}.zip" Duck)
 
       - name: Extract release notes

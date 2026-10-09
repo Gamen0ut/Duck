@@ -5,7 +5,14 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 DEST="$HOME/.config/DankMaterialShell/plugins/Duck"
 case "$1" in
   link)   mkdir -p "$(dirname "$DEST")"; ln -sfn "$DIR" "$DEST"; echo "Linked $DIR -> $DEST" ;;
-  reload) dms ipc call plugins reload duck ;;
+  reload)
+    # `plugins reload` fails every other time ("File name case mismatch") for
+    # plugins that import sibling files (DuckStats.js, ConfirmButton.qml).
+    # Only this dev-only path is affected: startup and enable load fine.
+    out="$(dms ipc call plugins reload duck)"
+    [[ "$out" == *FAILED* ]] && out="$(dms ipc call plugins reload duck)"
+    echo "$out"
+    [[ "$out" != *FAILED* ]] ;;
   status) dms ipc call plugins status duck ;;
   release)
     v="$2"

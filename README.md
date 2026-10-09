@@ -12,6 +12,8 @@ Duck is a playground plugin: a place to try out the DMS plugin API before buildi
 - Custom quack color, or follow the theme accent
 - Random quacks from your own phrase list
 - Optional toast notification on every quack
+- Quack stats (total, today, streak) in a hover tooltip, with an optional counter in the bar
+- 7 achievements to unlock 🏅
 
 ## Requirements
 
@@ -40,6 +42,7 @@ Download `Duck-vX.Y.Z.zip` from [Releases](https://github.com/Gamen0ut/Duck/rele
 |----------------------------|-------------------------|--------------|-------------------------------------------------|
 | Duck                       | `duckEmoji`             | `🦆`         | Which bird lives in your bar                    |
 | Hide duck while quacking   | `hideEmojiWhenQuacking` | `false`      | Only show the quack text during a quack         |
+| Show quack counter         | `showCounter`           | `false`      | Show the total number of quacks next to the duck |
 | Custom quack color         | `useCustomColor`        | `false`      | Use the color below instead of the theme accent |
 | Quack color                | `quackColor`            | theme accent | Color of the quack text                         |
 | Quack text                 | `quackText`             | `Quack!`     | What the duck says when clicked                 |
@@ -63,6 +66,8 @@ Duck/
 ├── plugin.json        # manifest (id, version, entry points, permissions)
 ├── Duck.qml           # widget: bar pills + quack logic
 ├── DuckSettings.qml   # settings page
+├── DuckStats.js       # pure stats logic (testable with node)
+├── ConfirmButton.qml  # click-twice confirmation button
 ├── dev.sh             # dev helper (link / reload / status / release)
 ├── CHANGELOG.md
 └── ROADMAP.md
