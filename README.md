@@ -2,21 +2,49 @@
 
 A tiny [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell) bar widget: a duck that says **quack** when you click it.
 
+<p align="center">
+  <img src="screenshot.png" width="300" alt="Duck's popout: a big mallard, quack stats and a pond full of swimming birds">
+</p>
+
 Duck is a playground plugin: a place to try out the DMS plugin API before building bigger plugins. See [ROADMAP.md](ROADMAP.md) for what's planned.
 
 ## Features
 
-- Works in horizontal and vertical bars
-- Click the duck → it shows the quack text (duration is configurable)
-- Right-click opens a popout with a big duck and your stats
-- Right-click / middle-click / left-click actions are configurable (popout, silent quack, random bird, stats)
-- Click fast for combos: "Quack! ×3"… and see what happens at ×10 and ×25
-- Pick your bird: 🦆 🐤 🐥 🐣 🦢 (in settings, or scroll over the duck)
-- Custom quack color, or follow the theme accent
-- Random quacks from your own phrase list
-- Optional toast notification on every quack
-- Quack stats (total, today, streak) in a hover tooltip, with an optional counter in the bar
-- Achievements to unlock 🏅, some of them secret
+- **Click the duck, it quacks**: in horizontal and vertical bars, with the DMS ripple
+- **Combos**: click fast for "Quack! ×3"… and see what happens at ×10, ×25 and ×100
+- **Popout** (right-click): a big clickable duck, your stats and three tabs
+  - 🦆 **Pond**: one swimming bird per quack today
+  - 📜 **History**: your last 20 quacks, combos grouped
+  - 🏅 **Achievements**: 25 to unlock, some of them secret
+- **Feed the duck** 🍞, switch to a random bird 🎲
+- **Stats**: total, today and day streak, in a hover tooltip and an optional counter
+- **Pick your bird**: 🦆 🐤 🐥 🐣 🦢, in settings or by scrolling over the duck
+- **Configurable**: quack text or random phrases, duration, color, left/right/middle-click actions, toasts
+
+## Screenshots
+
+| Pond & feeding | History | Achievements |
+|:---:|:---:|:---:|
+| <img src="screenshots/popout-feed.png" width="230" alt="Popout after feeding: the duck says Nom nom"> | <img src="screenshots/popout-history.png" width="230" alt="History tab with grouped combos"> | <img src="screenshots/popout-achievements.png" width="230" alt="Achievements tab with unlock dates"> |
+
+**In the bar**: quacking, and the hover tooltip
+
+<img src="screenshots/widget-quack.png" alt="The duck quacking in the bar"> <img src="screenshots/widget-tooltip.png" alt="Hover tooltip with quack stats">
+
+**Combos and achievements**
+
+<img src="screenshots/toast-combo-10.png" alt="Warning toast at a ×10 combo"><br>
+<img src="screenshots/toast-combo-25.png" alt="Error toast at a ×25 combo"><br>
+<img src="screenshots/toast-achievement.png" alt="Achievement unlocked toast: Quackpocalypse">
+
+<details>
+<summary><b>Settings page</b></summary>
+
+<img src="screenshots/settings-1.png" width="400" alt="Settings: look and quack">
+<img src="screenshots/settings-2.png" width="400" alt="Settings: mouse and notifications">
+<img src="screenshots/settings-3.png" width="400" alt="Settings: stats, achievements and reset">
+
+</details>
 
 ## Requirements
 
@@ -81,6 +109,8 @@ Duck/
 ├── AchievementList.qml # achievement list (settings + popout)
 ├── Pond.qml           # the popout's animated pond
 ├── tests/             # node unit tests: for f in tests/*.test.js; do node $f; done
+├── screenshot.png     # main image (README, plugin registry)
+├── screenshots/       # README images
 ├── dev.sh             # dev helper (link / reload / status / release)
 ├── CHANGELOG.md
 └── ROADMAP.md
