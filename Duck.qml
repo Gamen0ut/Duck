@@ -25,6 +25,8 @@ PluginComponent {
     property string rightClickAction: pluginData.rightClickAction || "popout"
     property string middleClickAction: pluginData.middleClickAction || "randomBird"
 
+    property var popoutService: null // injected by DMS because it's declared
+
     property bool quacking: false
     property string currentQuack: quackText
     property Item hoveredPill: null // for refreshing the tooltip after a click
@@ -145,7 +147,21 @@ PluginComponent {
     function recordQuack() {
         const now = new Date()
         stats = Stats.record(stats, currentQuack, now)
-        const unlocked = Stats.newlyUnlocked(stats, now, {combo: combo})
+        unlockAndSave(now, {combo: combo})
+    }
+
+    function feed() {
+        stats = Stats.feed(stats)
+        currentQuack = "Nom nom! 😋"
+        quacking = true
+        resetTimer.restart()
+        if (showToast)
+            ToastService.showInfo("🍞 Nom nom!")
+        unlockAndSave(new Date(), {combo: 0})
+    }
+
+    function unlockAndSave(now, ctx) {
+        const unlocked = Stats.newlyUnlocked(stats, now, ctx)
         if (unlocked.length > 0) {
             stats = Stats.unlock(stats, unlocked, now)
             for (const t of Stats.unlockToasts(unlocked, achievementToasts))
@@ -507,6 +523,33 @@ PluginComponent {
                             id: achievementList
                             width: parent.width
                             stats: root.stats
+                        }
+                    }
+                }
+
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: Theme.spacingS
+
+                    DankButton {
+                        text: "Feed"
+                        iconName: "bakery_dining"
+                        onClicked: root.feed()
+                    }
+                    DankButton {
+                        text: "Random bird"
+                        iconName: "casino"
+                        onClicked: root.runAction("randomBird")
+                    }
+                    DankButton {
+                        text: "Settings"
+                        iconName: "settings"
+                        onClicked: {
+                            // closePopout is injected by DMS into PopoutComponent
+                            if (popout.closePopout)
+                                popout.closePopout()
+                            if (root.popoutService)
+                                root.popoutService.openSettingsWithTab("plugins")
                         }
                     }
                 }

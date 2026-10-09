@@ -119,13 +119,13 @@ Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` 
 - [x] 🟢 **Toast levels**: warning at combo ×10, error at ×25. *Learns:* `ToastService.showWarning` / `showError`
 - [x] 🟢 🌀💥☄️ **Combo achievements** (×10, ×25, ×100). *Learns:* passing click context to achievement checks (`test(summary, now, ctx)`), additive again
 
-## 0.6.0 — Popout
+## 0.6.0 — Popout ✅
 
 - [x] 🟡 **Achievements tab** in the popout (reuses `AchievementList.qml`). *Learns:* tabs with `DankButtonGroup`, scrolling with `DankFlickable`
 - [x] 🟡 **Popout window** (right-click by default) with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
 - [x] 🟡 **Pond view**: one swimming bird per quack today. *Learns:* `Repeater`, looping `SequentialAnimation`, mirroring with `Scale`, pausing animations when hidden
 - [x] 🟡 **Quack history** list in the popout. *Learns:* `DankListView` with a JS array model, additive `history` data, merging combo entries
-- [ ] 🟢 **Buttons in the popout** (feed the duck, reset). *Learns:* DMS button widgets, closing the popout from code
+- [x] 🟢 **Buttons in the popout**: feed (🍞 achievement at 10), random bird, settings. *Learns:* `DankButton`, `closePopout()` injected into `PopoutComponent`, `popoutService` (injected only if declared)
 
 ## 0.7.0 — Animation & looks
 

@@ -12,6 +12,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Popout window: a big duck you can click (combos too) and your stats at a glance.
 - Pond tab (the default): one swimming bird per quack today, up to 12. Click one to quack.
 - Achievements tab in the popout.
+- Popout buttons: 🍞 Feed the duck, 🎲 Random bird, ⚙️ Settings (opens the Plugins tab).
+- 🍞 Bread winner achievement: feed the duck 10 times.
 - History tab: your last 20 quacks with their time; combos are grouped ("Quack! ×12").
 - "Left-click" setting: quack (default) or open the popout. "Open popout" is also available for right- and middle-click.
 

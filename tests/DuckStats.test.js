@@ -15,7 +15,7 @@ test("record counts total, today and last quack", () => {
     s = S.record(s, "Quack!", d("2026-10-08"))
     s = S.record(s, "Hi", d("2026-10-09"))
     s = S.record(s, "Hi2", d("2026-10-09"))
-    same(S.summary(s, d("2026-10-09")), {total: 4, today: 2, streak: 3, lastQuack: "Hi2"})
+    same(S.summary(s, d("2026-10-09")), {total: 4, today: 2, streak: 3, lastQuack: "Hi2", fed: 0})
 })
 
 test("streak survives until the day is over, then breaks", () => {
@@ -196,6 +196,18 @@ test("history: old saves load with an empty history, bad entries are dropped", (
     same(S.normalize({total: 5}).history, [])
     same(S.normalize({history: [{text: "ok", at: 1}, {text: 3, at: 1}, null]}).history,
          [{text: "ok", at: 1, last: 1, count: 1}])
+})
+
+test("feeding counts and unlocks Bread winner at 10", () => {
+    const now = d("2026-03-03")
+    let s = S.normalize(null)
+    for (let i = 0; i < 9; i++)
+        s = S.feed(s)
+    assert.ok(!ids(S.newlyUnlocked(s, now)).includes("fed10"))
+    s = S.feed(s)
+    assert.strictEqual(s.fed, 10)
+    assert.ok(ids(S.newlyUnlocked(s, now)).includes("fed10"))
+    assert.strictEqual(S.normalize({total: 3}).fed, 0, "old saves start at 0")
 })
 
 test("achievement ids are unique", () => {

@@ -43,6 +43,8 @@ var ACHIEVEMENTS = [
     {id: "leapDay",  icon: "🐸", name: "Leap duck",         description: "Quack on February 29th",     test: (s, now) => onDate(now, 2, 29), hidden: true},
     {id: "halloween", icon: "🎃", name: "Spooky quack",     description: "Quack on October 31st",      test: (s, now) => onDate(now, 10, 31), hidden: true},
     {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25), hidden: true},
+    // Care
+    {id: "fed10",    icon: "🍞", name: "Bread winner",      description: "Feed the duck 10 times",     test: s => s.fed >= 10},
     // Meta
     {id: "completionist", icon: "🏅", name: "Completionist", description: "Unlock every other achievement", meta: true}
 ]
@@ -57,6 +59,7 @@ function emptyStats() {
         total: 0,
         daily: {},          // { "2026-10-09": 12, ... } in local time
         lastQuack: "",
+        fed: 0,             // times the duck was fed (popout button; added in 0.6.0)
         history: [],        // recent quacks, newest first: {text, at, last, count}
                             // (added in 0.6.0; older saves start empty)
         achievements: [],   // ids of unlocked achievements
@@ -77,6 +80,7 @@ function normalize(raw) {
             if (Number.isInteger(raw.daily[day]) && raw.daily[day] > 0)
                 s.daily[day] = raw.daily[day]
     s.lastQuack = typeof raw.lastQuack === "string" ? raw.lastQuack : ""
+    s.fed = Number.isInteger(raw.fed) && raw.fed > 0 ? raw.fed : 0
     if (Array.isArray(raw.history))
         s.history = raw.history
             .filter(h => h && typeof h.text === "string" && Number.isFinite(h.at))
@@ -122,8 +126,16 @@ function summary(stats, now) {
         total: stats.total,
         today: stats.daily[dayKey(now)] || 0,
         streak: streak(stats, now),
-        lastQuack: stats.lastQuack
+        lastQuack: stats.lastQuack,
+        fed: stats.fed
     }
+}
+
+// Returns a new stats object with the duck fed once more.
+function feed(stats) {
+    const s = normalize(stats)
+    s.fed += 1
+    return s
 }
 
 // Returns a new stats object with one more quack. Never mutates the input:
