@@ -139,6 +139,11 @@ test("calendar achievements unlock on their day and not the day before", () => {
     }
 })
 
+test("calendar achievements are secret, the others are not", () => {
+    const hidden = ids(S.ACHIEVEMENTS.filter(a => a.hidden))
+    same(hidden, ["newYear", "valentine", "leapDay", "halloween", "christmas"])
+})
+
 test("achievement ids are unique", () => {
     const all = ids(S.ACHIEVEMENTS)
     assert.strictEqual(new Set(all).size, all.length)

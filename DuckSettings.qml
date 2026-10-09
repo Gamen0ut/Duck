@@ -220,6 +220,7 @@ PluginSettings {
             Row {
                 required property var modelData
                 readonly property bool unlocked: root.stats.achievements.indexOf(modelData.id) !== -1
+                readonly property bool secret: modelData.hidden === true && !unlocked
 
                 spacing: Theme.spacingS
                 opacity: unlocked ? 1 : 0.4
@@ -229,7 +230,7 @@ PluginSettings {
                     font.pixelSize: Theme.fontSizeMedium
                 }
                 StyledText {
-                    text: parent.modelData.name + " · " + parent.modelData.description
+                    text: parent.secret ? "??? · Secret achievement" : parent.modelData.name + " · " + parent.modelData.description
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.surfaceText
                     anchors.verticalCenter: parent.verticalCenter

@@ -6,7 +6,8 @@
 
 const KEEP_DAYS = 90 // per-day history older than this is dropped
 
-// `test(summary, now)` receives summary(stats, now) and the Date of the quack. `var`, not `const`: only `var` is
+// `test(summary, now)` receives summary(stats, now) and the Date of the quack.
+// `hidden: true` = secret: settings shows "???" until it's unlocked. `var`, not `const`: only `var` is
 // visible from QML as Stats.ACHIEVEMENTS.
 var ACHIEVEMENTS = [
     // Milestones
@@ -29,11 +30,11 @@ var ACHIEVEMENTS = [
     {id: "nightOwl", icon: "🦉", name: "Night owl",         description: "Quack between 00:00 and 04:00", test: (s, now) => now.getHours() < 4},
     {id: "earlyBird", icon: "🐓", name: "Early bird",       description: "Quack between 05:00 and 07:00", test: (s, now) => now.getHours() >= 5 && now.getHours() < 7},
     // Calendar
-    {id: "newYear",  icon: "🎆", name: "Happy new quack",   description: "Quack on January 1st",       test: (s, now) => onDate(now, 1, 1)},
-    {id: "valentine", icon: "💘", name: "Love quack",       description: "Quack on February 14th",     test: (s, now) => onDate(now, 2, 14)},
-    {id: "leapDay",  icon: "🐸", name: "Leap duck",         description: "Quack on February 29th",     test: (s, now) => onDate(now, 2, 29)},
-    {id: "halloween", icon: "🎃", name: "Spooky quack",     description: "Quack on October 31st",      test: (s, now) => onDate(now, 10, 31)},
-    {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25)}
+    {id: "newYear",  icon: "🎆", name: "Happy new quack",   description: "Quack on January 1st",       test: (s, now) => onDate(now, 1, 1), hidden: true},
+    {id: "valentine", icon: "💘", name: "Love quack",       description: "Quack on February 14th",     test: (s, now) => onDate(now, 2, 14), hidden: true},
+    {id: "leapDay",  icon: "🐸", name: "Leap duck",         description: "Quack on February 29th",     test: (s, now) => onDate(now, 2, 29), hidden: true},
+    {id: "halloween", icon: "🎃", name: "Spooky quack",     description: "Quack on October 31st",      test: (s, now) => onDate(now, 10, 31), hidden: true},
+    {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25), hidden: true}
 ]
 
 // month is 1-12 (Date.getMonth() is 0-11)
