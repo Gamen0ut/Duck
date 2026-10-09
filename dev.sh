@@ -25,19 +25,18 @@ case "$1" in
     # Captures the last-selected screen region after a delay, so there's time
     # to open the popout first (picking a region could close it). Pick the
     # region once beforehand: dms screenshot region --no-file
-    # "screenshot" goes to the plugin root (the main image, like other DMS
-    # plugins); anything else to screenshots/.
+    # Saved to Pictures/ (gitignored raw shots); copy the keepers to
+    # screenshots/ or screenshot.png for the README.
     name="$2"; delay="${3:-3}"
     [ -n "$name" ] || { echo "Usage: $0 shot <name> [delay]"; exit 1; }
-    out="$DIR/screenshots"; [ "$name" = "screenshot" ] && out="$DIR"
-    mkdir -p "$out"
-    echo "Capturing $name.png in ${delay}s..."; sleep "$delay"
-    dms screenshot last --dir "$out" --filename "$name.png" --no-clipboard ;;
+    mkdir -p "$DIR/Pictures"
+    echo "Capturing Pictures/$name.png in ${delay}s..."; sleep "$delay"
+    dms screenshot last --dir "$DIR/Pictures" --filename "$name.png" --no-clipboard ;;
   record)
-    # Records a region to screenshots/<name>.gif: select the region, then 3 s
+    # Records a region to Pictures/<name>.gif: select the region, then 3 s
     # to open the popout, then <seconds> of recording (default 6), converted
     # with an optimised palette (15 fps, 480 px wide). Needs wf-recorder.
-    name="$2"; secs="${3:-6}"
+    name="$2"; secs="${3:-7}"
     [ -n "$name" ] || { echo "Usage: $0 record <name> [seconds]"; exit 1; }
     command -v wf-recorder >/dev/null || { echo "wf-recorder is not installed"; exit 1; }
     tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
@@ -47,11 +46,11 @@ case "$1" in
     echo "Recording $geo in 3 s, for ${secs} s..."; sleep 3
     timeout -s INT "$secs" wf-recorder -g "$geo" -f "$tmp/rec.mp4" >/dev/null 2>&1 || true
     [ -s "$tmp/rec.mp4" ] || { echo "Recording failed"; exit 1; }
-    mkdir -p "$DIR/screenshots"
+    mkdir -p "$DIR/Pictures"
     ffmpeg -loglevel error -y -i "$tmp/rec.mp4" \
       -vf "fps=15,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse" \
-      "$DIR/screenshots/$name.gif"
-    echo "Saved screenshots/$name.gif ($(du -h "$DIR/screenshots/$name.gif" | cut -f1))" ;;
+      "$DIR/Pictures/$name.gif"
+    echo "Saved Pictures/$name.gif ($(du -h "$DIR/Pictures/$name.gif" | cut -f1))" ;;
   release)
     v="$2"
     [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Usage: $0 release <x.y.z>"; exit 1; }
