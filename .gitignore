@@ -18,3 +18,6 @@ dist/
 
 # Personal notes (not published)
 *.local.md
+
+# Pictures
+/Pictures
