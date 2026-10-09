@@ -8,6 +8,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-09
+
 ### Added
 - Popout window: a big duck you can click (combos too) and your stats at a glance.
 - Pond tab (the default): one swimming bird per quack today, up to 12. Click one to quack.
@@ -78,7 +80,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Settings: custom quack text, toast toggle.
 - `dev.sh` helper to link, reload and check the plugin status.
 
-[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/Gamen0ut/Duck/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Gamen0ut/Duck/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Gamen0ut/Duck/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Gamen0ut/Duck/compare/v0.2.0...v0.3.0
