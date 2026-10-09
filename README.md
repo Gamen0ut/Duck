@@ -68,7 +68,9 @@ Duck/
 ├── Duck.qml           # widget: bar pills + quack logic
 ├── DuckSettings.qml   # settings page
 ├── DuckStats.js       # pure stats logic (testable with node)
+├── Birds.js           # the bird list (dropdown, scroll wheel, random bird)
 ├── ConfirmButton.qml  # click-twice confirmation button
+├── tests/             # node unit tests: for f in tests/*.test.js; do node $f; done
 ├── dev.sh             # dev helper (link / reload / status / release)
 ├── CHANGELOG.md
 └── ROADMAP.md

@@ -4,6 +4,7 @@ import qs.Modules.Plugins
 import qs.Services
 import qs.Widgets
 import "DuckStats.js" as Stats
+import "Birds.js" as Birds
 
 PluginSettings {
     id: root
@@ -81,13 +82,7 @@ PluginSettings {
         settingKey: "duckEmoji"
         label: "Duck"
         description: "Which bird lives in your bar"
-        options: [
-            {label: "🦆 Duck", value: "🦆"},
-            {label: "🐤 Chick", value: "🐤"},
-            {label: "🐥 Front chick", value: "🐥"},
-            {label: "🐣 Hatching", value: "🐣"},
-            {label: "🦢 Swan", value: "🦢"}
-        ]
+        options: Birds.options()
         defaultValue: "🦆"
     }
 
