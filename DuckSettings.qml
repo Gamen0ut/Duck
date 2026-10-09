@@ -230,7 +230,13 @@ PluginSettings {
                     font.pixelSize: Theme.fontSizeMedium
                 }
                 StyledText {
-                    text: parent.secret ? "??? · Secret achievement" : parent.modelData.name + " · " + parent.modelData.description
+                    text: {
+                        if (parent.secret)
+                            return "??? · Secret achievement"
+                        const at = root.stats.unlockedAt[parent.modelData.id]
+                        return parent.modelData.name + " · " + parent.modelData.description
+                            + (at ? " · " + Qt.formatDate(new Date(at), "d MMM yyyy") : "")
+                    }
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.surfaceText
                     anchors.verticalCenter: parent.verticalCenter

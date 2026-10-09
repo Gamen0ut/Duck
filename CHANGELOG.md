@@ -13,6 +13,7 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - 7 time and calendar achievements: 🦉 Night owl, 🐓 Early bird, 🎆 Happy new quack, 💘 Love quack, 🐸 Leap duck, 🎃 Spooky quack, 🎄 Jingle quack.
 - Secret achievements: the calendar ones show as "🔒 ???" in settings until unlocked.
 - 🏅 Completionist: unlock every other achievement.
+- Unlock dates shown in the settings achievement list (for achievements unlocked from now on).
 
 ## [0.3.0] - 2026-10-09
 

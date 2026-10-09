@@ -50,7 +50,9 @@ function emptyStats() {
         total: 0,
         daily: {},          // { "2026-10-09": 12, ... } in local time
         lastQuack: "",
-        achievements: []    // ids of unlocked achievements
+        achievements: [],   // ids of unlocked achievements
+        unlockedAt: {}      // { id: ms timestamp }; added in 0.4.0, so older
+                            // unlocks have no date (no migration needed)
     }
 }
 
@@ -68,6 +70,10 @@ function normalize(raw) {
     s.lastQuack = typeof raw.lastQuack === "string" ? raw.lastQuack : ""
     if (Array.isArray(raw.achievements))
         s.achievements = raw.achievements.filter(id => ACHIEVEMENTS.some(a => a.id === id))
+    if (raw.unlockedAt && typeof raw.unlockedAt === "object")
+        for (const id of s.achievements)
+            if (Number.isFinite(raw.unlockedAt[id]))
+                s.unlockedAt[id] = raw.unlockedAt[id]
     return s
 }
 
@@ -131,11 +137,14 @@ function newlyUnlocked(stats, now) {
     return found.concat(ACHIEVEMENTS.filter(a => a.meta && isNew(a) && allDone))
 }
 
-// Returns a new stats object with those achievements marked as unlocked.
-function unlock(stats, achievements) {
+// Returns a new stats object with those achievements marked as unlocked at
+// `now`.
+function unlock(stats, achievements, now) {
     const s = normalize(stats)
     for (const a of achievements)
-        if (s.achievements.indexOf(a.id) === -1)
+        if (s.achievements.indexOf(a.id) === -1) {
             s.achievements.push(a.id)
+            s.unlockedAt[a.id] = now.getTime()
+        }
     return s
 }

@@ -62,12 +62,12 @@ test("normalize repairs bad or unknown data", () => {
 test("achievements unlock once, in order", () => {
     let s = S.record(S.normalize(null), "q", d("2026-10-09"))
     same(ids(S.newlyUnlocked(s, d("2026-10-09"))), ["first"])
-    s = S.unlock(s, S.newlyUnlocked(s, d("2026-10-09")))
+    s = S.unlock(s, S.newlyUnlocked(s, d("2026-10-09")), d("2026-10-09"))
     same(S.newlyUnlocked(s, d("2026-10-09")), [])
     for (let i = 0; i < 24; i++)
         s = S.record(s, "q", d("2026-10-09"))
     same(ids(S.newlyUnlocked(s, d("2026-10-09"))), ["q10", "day25"])
-    s = S.unlock(s, S.newlyUnlocked(s, d("2026-10-09")))
+    s = S.unlock(s, S.newlyUnlocked(s, d("2026-10-09")), d("2026-10-09"))
     s = S.record(s, "q", d("2026-10-10"))
     s = S.record(s, "q", d("2026-10-11"))
     same(ids(S.newlyUnlocked(s, d("2026-10-11"))), ["streak3"])
@@ -80,7 +80,7 @@ function play(stats, start, days, n) {
         const now = new Date(start.getFullYear(), start.getMonth(), start.getDate() + day, 12)
         for (let i = 0; i < n; i++) {
             stats = S.record(stats, "q", now)
-            stats = S.unlock(stats, S.newlyUnlocked(stats, now))
+            stats = S.unlock(stats, S.newlyUnlocked(stats, now), now)
         }
     }
     return stats
@@ -155,6 +155,18 @@ test("Completionist unlocks together with the last missing achievement", () => {
     s = S.normalize({achievements: others.filter(id => id !== "first" && id !== "christmas")})
     s = S.record(s, "q", now)
     same(ids(S.newlyUnlocked(s, now)), ["first"])
+})
+
+test("unlock records the date; old saves without dates still load", () => {
+    const now = new Date(2026, 9, 9, 14, 30)
+    const s = S.unlock(S.record(S.normalize(null), "q", now), [S.ACHIEVEMENTS[0]], now)
+    same(s.unlockedAt, {first: now.getTime()})
+    // a 0.3.0 save: ids only, no unlockedAt
+    const old = S.normalize({total: 12, achievements: ["first", "q10"]})
+    same(old.achievements, ["first", "q10"])
+    same(old.unlockedAt, {})
+    // garbage and dates of achievements that aren't unlocked are dropped
+    same(S.normalize({achievements: ["first"], unlockedAt: {first: "x", q10: 5}}).unlockedAt, {})
 })
 
 test("achievement ids are unique", () => {

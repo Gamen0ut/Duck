@@ -62,7 +62,7 @@ From 7 to 22 achievements, plus secret ones and unlock dates.
 **C. Around achievements**
 - [x] 🟡 🥚 **Secret achievements**: `hidden: true`, shown as `🔒 ???` until unlocked (the calendar ones)
 - [x] 🟡 🏅 **Completionist**: unlock every other achievement (must not count itself)
-- [ ] 🟢 **Unlock dates** in settings. *Learns:* additive data changes (a new `unlockedAt` map, so old saves need no migration)
+- [x] 🟢 **Unlock dates** in settings. *Learns:* additive data changes (a new `unlockedAt` map, so old saves need no migration)
 - [ ] 🟢 **Grouped toast** when more than 2 achievements unlock at once
 
 ## Achievement backlog
@@ -202,6 +202,7 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`plugins reload` alternates success/failure** once the plugin imports a sibling file (`import "X.js"`, or another `.qml` used as a type). The error is a misleading *File name case mismatch*. It happens with a symlink or a real folder, with any file name, with or without `.pragma library`. Startup and enable/disable load fine, so only the dev loop is affected: `dev.sh reload` retries once.
 - **Settings vs state.** `savePluginData` = user *settings* (in DMS's settings file, edited by the settings page). `savePluginState` = runtime *data* (counters, history) in `~/.local/state/DankMaterialShell/plugins/duck_state.json`. Writes are batched by a timer, and `pluginStateChanged(id)` fires so other instances/the settings page can refresh.
 - **Bar tooltips**: `DankTooltipV2` draws inside the widget's own window (clipped by the bar). Bar widgets use `DankTooltip` in a `Loader`, which is its own layer window placed in screen coordinates; compute the position from `axis.edge`, `barThickness`, `barSpacing`, `parentScreen` (see DMS's `Vpn.qml`).
+- **Change saved data by adding, not reshaping**: unlock dates went into a new `unlockedAt` map next to the existing `achievements` id list. Old saves just lack the map, so no migration code is needed. A test loads a simulated 0.3.0 save to prove it.
 - **Grow APIs by adding, not changing**: achievement checks went from `test(summary)` to `test(summary, now)`. JS ignores extra arguments, so every existing `s => s.total >= 10` kept working untouched.
 - **Only `var` is exported from a JS library**: QML sees `Stats.ACHIEVEMENTS` only if it's declared with `var`, not `const`/`let`.
 - **Keep logic in a `.pragma library` JS file** to unit-test it with `node`: see `tests/DuckStats.test.js` (strips the pragma, evaluates in a `vm` sandbox; compare results as plain JSON).

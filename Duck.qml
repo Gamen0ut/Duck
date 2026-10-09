@@ -54,7 +54,7 @@ PluginComponent {
         stats = Stats.record(stats, currentQuack, now)
         const unlocked = Stats.newlyUnlocked(stats, now)
         if (unlocked.length > 0) {
-            stats = Stats.unlock(stats, unlocked)
+            stats = Stats.unlock(stats, unlocked, now)
             for (const a of unlocked)
                 ToastService.showInfo(a.icon + " Achievement unlocked: " + a.name, a.description)
         }
