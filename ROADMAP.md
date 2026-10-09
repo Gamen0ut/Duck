@@ -61,7 +61,7 @@ From 7 to 22 achievements, plus secret ones and unlock dates.
 
 **C. Around achievements**
 - [x] 🟡 🥚 **Secret achievements**: `hidden: true`, shown as `🔒 ???` until unlocked (the calendar ones)
-- [ ] 🟡 🏅 **Completionist**: unlock every other achievement (must not count itself)
+- [x] 🟡 🏅 **Completionist**: unlock every other achievement (must not count itself)
 - [ ] 🟢 **Unlock dates** in settings. *Learns:* additive data changes (a new `unlockedAt` map, so old saves need no migration)
 - [ ] 🟢 **Grouped toast** when more than 2 achievements unlock at once
 

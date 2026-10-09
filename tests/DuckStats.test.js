@@ -144,6 +144,19 @@ test("calendar achievements are secret, the others are not", () => {
     same(hidden, ["newYear", "valentine", "leapDay", "halloween", "christmas"])
 })
 
+test("Completionist unlocks together with the last missing achievement", () => {
+    const others = ids(S.ACHIEVEMENTS.filter(a => !a.meta))
+    const now = d("2026-03-03")
+    // everything except "first"
+    let s = S.normalize({achievements: others.filter(id => id !== "first")})
+    s = S.record(s, "q", now)
+    same(ids(S.newlyUnlocked(s, now)), ["first", "completionist"])
+    // two missing: no Completionist yet
+    s = S.normalize({achievements: others.filter(id => id !== "first" && id !== "christmas")})
+    s = S.record(s, "q", now)
+    same(ids(S.newlyUnlocked(s, now)), ["first"])
+})
+
 test("achievement ids are unique", () => {
     const all = ids(S.ACHIEVEMENTS)
     assert.strictEqual(new Set(all).size, all.length)

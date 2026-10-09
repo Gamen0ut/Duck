@@ -7,7 +7,8 @@
 const KEEP_DAYS = 90 // per-day history older than this is dropped
 
 // `test(summary, now)` receives summary(stats, now) and the Date of the quack.
-// `hidden: true` = secret: settings shows "???" until it's unlocked. `var`, not `const`: only `var` is
+// `hidden: true` = secret: settings shows "???" until it's unlocked.
+// `meta: true` = unlocked when every non-meta achievement is (no `test`). `var`, not `const`: only `var` is
 // visible from QML as Stats.ACHIEVEMENTS.
 var ACHIEVEMENTS = [
     // Milestones
@@ -34,7 +35,9 @@ var ACHIEVEMENTS = [
     {id: "valentine", icon: "💘", name: "Love quack",       description: "Quack on February 14th",     test: (s, now) => onDate(now, 2, 14), hidden: true},
     {id: "leapDay",  icon: "🐸", name: "Leap duck",         description: "Quack on February 29th",     test: (s, now) => onDate(now, 2, 29), hidden: true},
     {id: "halloween", icon: "🎃", name: "Spooky quack",     description: "Quack on October 31st",      test: (s, now) => onDate(now, 10, 31), hidden: true},
-    {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25), hidden: true}
+    {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25), hidden: true},
+    // Meta
+    {id: "completionist", icon: "🏅", name: "Completionist", description: "Unlock every other achievement", meta: true}
 ]
 
 // month is 1-12 (Date.getMonth() is 0-11)
@@ -117,9 +120,15 @@ function record(stats, text, now) {
 }
 
 // Achievements whose condition is now met but that aren't unlocked yet.
+// Meta achievements are checked last, counting what this quack unlocks, so
+// Completionist arrives together with the last missing achievement.
 function newlyUnlocked(stats, now) {
     const sum = summary(stats, now)
-    return ACHIEVEMENTS.filter(a => stats.achievements.indexOf(a.id) === -1 && a.test(sum, now))
+    const isNew = a => stats.achievements.indexOf(a.id) === -1
+    const found = ACHIEVEMENTS.filter(a => !a.meta && isNew(a) && a.test(sum, now))
+    const have = stats.achievements.concat(found.map(a => a.id))
+    const allDone = ACHIEVEMENTS.every(a => a.meta || have.indexOf(a.id) !== -1)
+    return found.concat(ACHIEVEMENTS.filter(a => a.meta && isNew(a) && allDone))
 }
 
 // Returns a new stats object with those achievements marked as unlocked.
