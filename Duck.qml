@@ -17,6 +17,7 @@ PluginComponent {
     property bool randomQuack: pluginData.randomQuack ?? false
     property var quackPhrases: (pluginData.quackPhrases || []).map(p => p.text).filter(t => t)
     property bool showCounter: pluginData.showCounter ?? false
+    property string achievementToasts: pluginData.achievementToasts || "grouped"
 
     property bool quacking: false
     property string currentQuack: quackText
@@ -54,9 +55,9 @@ PluginComponent {
         stats = Stats.record(stats, currentQuack, now)
         const unlocked = Stats.newlyUnlocked(stats, now)
         if (unlocked.length > 0) {
-            stats = Stats.unlock(stats, unlocked)
-            for (const a of unlocked)
-                ToastService.showInfo(a.icon + " Achievement unlocked: " + a.name, a.description)
+            stats = Stats.unlock(stats, unlocked, now)
+            for (const t of Stats.unlockToasts(unlocked, achievementToasts))
+                ToastService.showInfo(t.title, t.details)
         }
         if (pluginService)
             pluginService.savePluginState(stateId, "stats", stats)

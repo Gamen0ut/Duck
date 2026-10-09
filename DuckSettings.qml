@@ -182,6 +182,18 @@ PluginSettings {
         defaultValue: true
     }
 
+    SelectionSetting {
+        settingKey: "achievementToasts"
+        label: "Achievement toasts"
+        description: "How unlocked achievements are announced"
+        options: [
+            {label: "Grouped when more than 2", value: "grouped"},
+            {label: "One toast per achievement", value: "separate"},
+            {label: "Off", value: "off"}
+        ]
+        defaultValue: "grouped"
+    }
+
     // ── Stats ─────────────────────────────────────────────
 
     StyledText {
@@ -220,6 +232,7 @@ PluginSettings {
             Row {
                 required property var modelData
                 readonly property bool unlocked: root.stats.achievements.indexOf(modelData.id) !== -1
+                readonly property bool secret: modelData.hidden === true && !unlocked
 
                 spacing: Theme.spacingS
                 opacity: unlocked ? 1 : 0.4
@@ -229,7 +242,13 @@ PluginSettings {
                     font.pixelSize: Theme.fontSizeMedium
                 }
                 StyledText {
-                    text: parent.modelData.name + " · " + parent.modelData.description
+                    text: {
+                        if (parent.secret)
+                            return "??? · Secret achievement"
+                        const at = root.stats.unlockedAt[parent.modelData.id]
+                        return parent.modelData.name + " · " + parent.modelData.description
+                            + (at ? " · " + Qt.formatDate(new Date(at), "d MMM yyyy") : "")
+                    }
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.surfaceText
                     anchors.verticalCenter: parent.verticalCenter

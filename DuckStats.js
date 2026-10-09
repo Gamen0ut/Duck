@@ -6,24 +6,53 @@
 
 const KEEP_DAYS = 90 // per-day history older than this is dropped
 
-// `test` receives summary(stats, now). `var`, not `const`: only `var` is
+// `test(summary, now)` receives summary(stats, now) and the Date of the quack.
+// `hidden: true` = secret: settings shows "???" until it's unlocked.
+// `meta: true` = unlocked when every non-meta achievement is (no `test`). `var`, not `const`: only `var` is
 // visible from QML as Stats.ACHIEVEMENTS.
 var ACHIEVEMENTS = [
-    {id: "first",   icon: "🥚", name: "First quack",      description: "Quack once",                 test: s => s.total >= 1},
-    {id: "q10",     icon: "🐣", name: "Chatty duckling",  description: "Quack 10 times",             test: s => s.total >= 10},
-    {id: "q100",    icon: "🦆", name: "Seasoned quacker", description: "Quack 100 times",            test: s => s.total >= 100},
-    {id: "q1000",   icon: "👑", name: "Duck royalty",     description: "Quack 1000 times",           test: s => s.total >= 1000},
-    {id: "day25",   icon: "⚡", name: "Quack attack",     description: "Quack 25 times in one day",  test: s => s.today >= 25},
-    {id: "streak3", icon: "🔥", name: "On a roll",        description: "Quack 3 days in a row",      test: s => s.streak >= 3},
-    {id: "streak7", icon: "🏆", name: "Weekly waddle",    description: "Quack 7 days in a row",      test: s => s.streak >= 7}
+    // Milestones
+    {id: "first",    icon: "🥚", name: "First quack",       description: "Quack once",                 test: s => s.total >= 1},
+    {id: "q10",      icon: "🐣", name: "Chatty duckling",   description: "Quack 10 times",             test: s => s.total >= 10},
+    {id: "q42",      icon: "🎲", name: "The answer",        description: "Quack 42 times",             test: s => s.total >= 42},
+    {id: "q100",     icon: "🦆", name: "Seasoned quacker",  description: "Quack 100 times",            test: s => s.total >= 100},
+    {id: "q666",     icon: "😈", name: "Devil's quack",     description: "Quack 666 times",            test: s => s.total >= 666},
+    {id: "q1000",    icon: "👑", name: "Duck royalty",      description: "Quack 1000 times",           test: s => s.total >= 1000},
+    {id: "q1337",    icon: "🕶️", name: "Leet quacker",      description: "Quack 1337 times",           test: s => s.total >= 1337},
+    // Daily
+    {id: "day25",    icon: "⚡", name: "Quack attack",      description: "Quack 25 times in one day",  test: s => s.today >= 25},
+    {id: "day100",   icon: "🌪️", name: "Quack frenzy",      description: "Quack 100 times in one day", test: s => s.today >= 100},
+    // Streaks (history keeps 90 days, so streaks above 91 can't be detected)
+    {id: "streak3",  icon: "🔥", name: "On a roll",         description: "Quack 3 days in a row",      test: s => s.streak >= 3},
+    {id: "streak7",  icon: "🏆", name: "Weekly waddle",     description: "Quack 7 days in a row",      test: s => s.streak >= 7},
+    {id: "streak14", icon: "📅", name: "Fortnight flock",   description: "Quack 14 days in a row",     test: s => s.streak >= 14},
+    {id: "streak30", icon: "🗓️", name: "Monthly migration", description: "Quack 30 days in a row",     test: s => s.streak >= 30},
+    // Time of day
+    {id: "nightOwl", icon: "🦉", name: "Night owl",         description: "Quack between 00:00 and 04:00", test: (s, now) => now.getHours() < 4},
+    {id: "earlyBird", icon: "🐓", name: "Early bird",       description: "Quack between 05:00 and 07:00", test: (s, now) => now.getHours() >= 5 && now.getHours() < 7},
+    // Calendar
+    {id: "newYear",  icon: "🎆", name: "Happy new quack",   description: "Quack on January 1st",       test: (s, now) => onDate(now, 1, 1), hidden: true},
+    {id: "valentine", icon: "💘", name: "Love quack",       description: "Quack on February 14th",     test: (s, now) => onDate(now, 2, 14), hidden: true},
+    {id: "leapDay",  icon: "🐸", name: "Leap duck",         description: "Quack on February 29th",     test: (s, now) => onDate(now, 2, 29), hidden: true},
+    {id: "halloween", icon: "🎃", name: "Spooky quack",     description: "Quack on October 31st",      test: (s, now) => onDate(now, 10, 31), hidden: true},
+    {id: "christmas", icon: "🎄", name: "Jingle quack",     description: "Quack on December 25th",     test: (s, now) => onDate(now, 12, 25), hidden: true},
+    // Meta
+    {id: "completionist", icon: "🏅", name: "Completionist", description: "Unlock every other achievement", meta: true}
 ]
+
+// month is 1-12 (Date.getMonth() is 0-11)
+function onDate(date, month, day) {
+    return date.getMonth() + 1 === month && date.getDate() === day
+}
 
 function emptyStats() {
     return {
         total: 0,
         daily: {},          // { "2026-10-09": 12, ... } in local time
         lastQuack: "",
-        achievements: []    // ids of unlocked achievements
+        achievements: [],   // ids of unlocked achievements
+        unlockedAt: {}      // { id: ms timestamp }; added in 0.4.0, so older
+                            // unlocks have no date (no migration needed)
     }
 }
 
@@ -41,6 +70,10 @@ function normalize(raw) {
     s.lastQuack = typeof raw.lastQuack === "string" ? raw.lastQuack : ""
     if (Array.isArray(raw.achievements))
         s.achievements = raw.achievements.filter(id => ACHIEVEMENTS.some(a => a.id === id))
+    if (raw.unlockedAt && typeof raw.unlockedAt === "object")
+        for (const id of s.achievements)
+            if (Number.isFinite(raw.unlockedAt[id]))
+                s.unlockedAt[id] = raw.unlockedAt[id]
     return s
 }
 
@@ -93,16 +126,42 @@ function record(stats, text, now) {
 }
 
 // Achievements whose condition is now met but that aren't unlocked yet.
+// Meta achievements are checked last, counting what this quack unlocks, so
+// Completionist arrives together with the last missing achievement.
 function newlyUnlocked(stats, now) {
     const sum = summary(stats, now)
-    return ACHIEVEMENTS.filter(a => stats.achievements.indexOf(a.id) === -1 && a.test(sum))
+    const isNew = a => stats.achievements.indexOf(a.id) === -1
+    const found = ACHIEVEMENTS.filter(a => !a.meta && isNew(a) && a.test(sum, now))
+    const have = stats.achievements.concat(found.map(a => a.id))
+    const allDone = ACHIEVEMENTS.every(a => a.meta || have.indexOf(a.id) !== -1)
+    return found.concat(ACHIEVEMENTS.filter(a => a.meta && isNew(a) && allDone))
 }
 
-// Returns a new stats object with those achievements marked as unlocked.
-function unlock(stats, achievements) {
+// Returns a new stats object with those achievements marked as unlocked at
+// `now`.
+function unlock(stats, achievements, now) {
     const s = normalize(stats)
     for (const a of achievements)
-        if (s.achievements.indexOf(a.id) === -1)
+        if (s.achievements.indexOf(a.id) === -1) {
             s.achievements.push(a.id)
+            s.unlockedAt[a.id] = now.getTime()
+        }
     return s
+}
+
+// Toasts to show for one quack's unlocks, depending on the
+// "achievementToasts" setting:
+//   "grouped"  (default) one each for 1-2 achievements, a single grouped toast
+//              for more (e.g. catching up after an update)
+//   "separate" always one toast per achievement
+//   "off"      no toasts (achievements still unlock)
+function unlockToasts(achievements, mode) {
+    if (mode === "off")
+        return []
+    if (mode === "separate" || achievements.length <= 2)
+        return achievements.map(a => ({title: a.icon + " Achievement unlocked: " + a.name, details: a.description}))
+    return [{
+        title: "🏅 " + achievements.length + " achievements unlocked!",
+        details: achievements.map(a => a.icon + " " + a.name).join(" · ")
+    }]
 }

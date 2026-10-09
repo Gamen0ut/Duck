@@ -38,34 +38,51 @@ Try every settings widget DMS offers.
 - [x] 🟡 **Achievements** ("100 quacks!") with a toast when unlocked. *Learns:* reacting to state changes
 - [x] 🟢 **Persist the last quack text** across restarts. *Learns:* what survives a shell reload and what doesn't
 
-## 0.3.x — More achievements & milestones
+## 0.4.0 — Achievements+ ✅
 
-New achievements are mostly one line in `DuckStats.js` plus a unit test. Some need data we don't track yet (noted in *Needs*).
+From 7 to 22 achievements, plus secret ones and unlock dates.
+
+**A. Milestones & streaks** (fit the existing stats)
+- [x] 🟢 🎲 **The answer**: 42 quacks
+- [x] 🟢 😈 **Devil's quack**: 666 quacks
+- [x] 🟢 🕶️ **Leet quacker**: 1337 quacks
+- [x] 🟢 🌪️ **Quack frenzy**: 100 quacks in one day
+- [x] 🟢 📅 **Fortnight flock**: 14-day streak
+- [x] 🟢 🗓️ **Monthly migration**: 30-day streak
+
+**B. Time & calendar.** *Learns:* extending the achievement `test` with the quack's `Date` without breaking existing tests
+- [x] 🟢 🦉 **Night owl**: quack between 00:00 and 04:00
+- [x] 🟢 🐓 **Early bird**: quack between 05:00 and 07:00
+- [x] 🟢 🎆 **Happy new quack**: January 1st
+- [x] 🟢 💘 **Love quack**: February 14th
+- [x] 🟢 🐸 **Leap duck**: February 29th
+- [x] 🟢 🎃 **Spooky quack**: October 31st
+- [x] 🟢 🎄 **Jingle quack**: December 25th
+
+**C. Around achievements**
+- [x] 🟡 🥚 **Secret achievements**: `hidden: true`, shown as `🔒 ???` until unlocked (the calendar ones)
+- [x] 🟡 🏅 **Completionist**: unlock every other achievement (must not count itself)
+- [x] 🟢 **Unlock dates** in settings. *Learns:* additive data changes (a new `unlockedAt` map, so old saves need no migration)
+- [x] 🟢 **Grouped toast** when more than 2 achievements unlock at once
+- [x] 🟢 **"Achievement toasts" setting**: grouped / one per achievement / off (your request after testing). *Learns:* `SelectionSetting` driving logic, missing keys falling back to the default
+
+## Achievement backlog
+
+Ideas not scheduled yet. New achievements are mostly one line in `DuckStats.js` plus a unit test; some need data we don't track yet (noted in *Needs*).
 
 ### Milestones (total quacks)
 
-- [ ] 🟢 🎲 **The answer**: quack 42 times
-- [ ] 🟢 🕶️ **Leet quacker**: quack 1337 times
 - [ ] 🟢 💎 **Quackillionaire**: 5 000 quacks
 - [ ] 🟢 🌌 **Duck singularity**: 10 000 quacks
 
 ### Daily & streaks
 
-- [ ] 🟢 🌪️ **Quack frenzy**: 100 quacks in one day
-- [ ] 🟢 📅 **Fortnight flock**: 14-day streak
-- [ ] 🟢 🗓️ **Monthly migration**: 30-day streak
-- [ ] 🟢 🏛️ **Century pond**: 100-day streak
+- [ ] 🟡 🏛️ **Century pond**: 100-day streak. *Needs:* `bestStreak` (history only keeps 90 days, so a streak can't exceed 91)
 - [ ] 🟡 🌍 **Year of the duck**: 365-day streak. *Needs:* keep more than 90 days of history, or store `bestStreak` / `currentStreakStart` instead of recomputing
 - [ ] 🟡 🗂️ **Every day of the week**: quack at least once on each weekday. *Learns:* `Date.getDay()`
 
 ### Time of day & calendar
 
-- [ ] 🟢 🦉 **Night owl**: quack between 00:00 and 04:00
-- [ ] 🟢 🐓 **Early bird**: quack between 05:00 and 07:00
-- [ ] 🟢 🎆 **Happy new quack**: quack on January 1st
-- [ ] 🟢 🎃 **Spooky quack**: quack on October 31st
-- [ ] 🟢 🎄 **Jingle quack**: quack on December 25th
-- [ ] 🟢 🐸 **Leap duck**: quack on February 29th
 - [ ] 🟡 ⏱️ **Exactly midnight**: quack at 00:00 on the dot. *Learns:* `achievement tests` that need the full `Date`, not just the summary
 
 ### Speed & behavior
@@ -83,25 +100,19 @@ New achievements are mostly one line in `DuckStats.js` plus a unit test. Some ne
 - [ ] 🟡 🎨 **Fashionista**: change the quack color 5 times
 - [ ] 🟢 🧹 **Fresh start**: reset your stats (the unlock survives the reset!). *Learns:* keeping some state through `clearPluginState`
 
-### Meta
-
-- [ ] 🟢 🏅 **Completionist**: unlock every other achievement
-- [ ] 🟡 🥚 **Secret achievements**: hidden (`???`) in settings until unlocked. *Learns:* `hidden: true` flag in the achievement list
-
 ### Systems around achievements
 
 - [ ] 🟡 **Progress bars** in settings (`63 / 100 quacks`). *Learns:* `progress(summary)` next to `test(summary)`, DMS progress widgets
-- [ ] 🟢 **Unlock date** shown under each achievement. *Learns:* storing `{id, at}` instead of plain ids (with migration in `normalize`)
 - [ ] 🟡 **Tiers** 🥉🥈🥇 for the same goal (100 / 1000 / 10 000). *Learns:* data-driven achievement definitions
 - [ ] 🟡 **Duck levels & XP**: each quack gives XP, level shown in the tooltip (Lv. 1 duckling → Lv. 10 legendary). *Learns:* derived state, curves
 - [ ] 🟡 **Evolution**: the bird evolves with level (🥚 → 🐣 → 🐥 → 🦆 → 🦢), unless a bird is picked in settings
 - [ ] 🟡 **Daily goal**: "Quack 10 times today", progress in the tooltip, small celebration toast
 - [ ] 🔴 **Weekly quests**: 3 random goals per week, rerolled every Monday. *Learns:* seeded randomness by week number
-- [ ] 🔴 **Achievement gallery** in the popout (pairs with 0.5.0)
-- [ ] 🟡 **Unlock sound / animation** (pairs with 0.6.0 & 0.7.0)
+- [ ] 🔴 **Achievement gallery** in the popout (pairs with 0.6.0)
+- [ ] 🟡 **Unlock sound / animation** (pairs with 0.7.0 & 0.8.0)
 - [ ] 🟢 **Export / import stats** as JSON. *Learns:* `FileView`, clipboard
 
-## 0.4.0 — Interaction
+## 0.5.0 — Interaction
 
 - [ ] 🟢 **Right-click / middle-click** actions (e.g. right-click = silent quack). *Learns:* `MouseArea.acceptedButtons`
 - [ ] 🟢 **Scroll wheel** cycles through ducks. *Learns:* `onWheel`
@@ -109,14 +120,14 @@ New achievements are mostly one line in `DuckStats.js` plus a unit test. Some ne
 - [ ] 🟡 **Double-click** = "QUACK QUACK" combo. *Learns:* click timing, gesture disambiguation
 - [ ] 🟢 **Toast levels**: info / warning / error depending on mood. *Learns:* `ToastService` variants
 
-## 0.5.0 — Popout
+## 0.6.0 — Popout
 
 - [ ] 🟡 **Popout window** on click with a big duck and the stats. *Learns:* `popoutContent`, `PopoutComponent`, `popoutWidth` / `popoutHeight`
 - [ ] 🟡 **Pond view**: several ducks swimming in the popout. *Learns:* QML layouts in popouts
 - [ ] 🟡 **Quack history** list in the popout. *Learns:* `ListView`, models, scrolling
 - [ ] 🟢 **Buttons in the popout** (feed the duck, reset). *Learns:* DMS button widgets, closing the popout from code
 
-## 0.6.0 — Animation & looks
+## 0.7.0 — Animation & looks
 
 - [ ] 🟢 **Wiggle** the duck on click. *Learns:* `SequentialAnimation`, `RotationAnimation`
 - [ ] 🟡 **Idle animation**: the duck bobs every N seconds. *Learns:* timers + animations, CPU cost of always-on animations
@@ -125,7 +136,7 @@ New achievements are mostly one line in `DuckStats.js` plus a unit test. Some ne
 - [ ] 🟡 **Custom SVG / PNG duck** shipped with the plugin. *Learns:* loading assets relative to the plugin dir
 - [ ] 🟢 **Respect the theme**: light/dark, accent color, font scale. *Learns:* `Theme.*` tokens
 
-## 0.7.0 — System integration
+## 0.8.0 — System integration
 
 - [ ] 🟡 **Quack sound** (play a bundled `.wav`). *Learns:* QtMultimedia or running `paplay` / `pw-play` via `Process`
 - [ ] 🟡 **Run a shell command** and show the result ("duck says: `uptime`"). *Learns:* `Quickshell.Io` `Process`, stdout parsing, permissions
@@ -136,14 +147,14 @@ New achievements are mostly one line in `DuckStats.js` plus a unit test. Some ne
 - [ ] 🟡 **Workspace duck**: changes when you switch workspace. *Learns:* compositor services (niri / Hyprland)
 - [ ] 🟡 **Read a file** (e.g. a fortune list) and quack a random line. *Learns:* `FileView`, file paths
 
-## 0.8.0 — IPC & automation
+## 0.9.0 — IPC & automation
 
 - [ ] 🟡 **`dms ipc call duck quack`** from the terminal. *Learns:* exposing an `IpcHandler` from a plugin
 - [ ] 🟡 **Keybind to quack** via the compositor calling IPC. *Learns:* wiring keybinds to plugin IPC
 - [ ] 🟡 **`dms ipc call duck say "text"`** with arguments. *Learns:* IPC function arguments and return values
 - [ ] 🔴 **Rubber-duck debugging**: pipe a command's exit code to the duck (`make; dms ipc call duck result $?`). *Learns:* scripting around IPC
 
-## 0.9.0 — Other plugin types
+## 0.10.0 — Other plugin types
 
 Same duck, different entry points.
 
@@ -192,7 +203,9 @@ Write down anything surprising about the DMS plugin API here as you go.
 - **`plugins reload` alternates success/failure** once the plugin imports a sibling file (`import "X.js"`, or another `.qml` used as a type). The error is a misleading *File name case mismatch*. It happens with a symlink or a real folder, with any file name, with or without `.pragma library`. Startup and enable/disable load fine, so only the dev loop is affected: `dev.sh reload` retries once.
 - **Settings vs state.** `savePluginData` = user *settings* (in DMS's settings file, edited by the settings page). `savePluginState` = runtime *data* (counters, history) in `~/.local/state/DankMaterialShell/plugins/duck_state.json`. Writes are batched by a timer, and `pluginStateChanged(id)` fires so other instances/the settings page can refresh.
 - **Bar tooltips**: `DankTooltipV2` draws inside the widget's own window (clipped by the bar). Bar widgets use `DankTooltip` in a `Loader`, which is its own layer window placed in screen coordinates; compute the position from `axis.edge`, `barThickness`, `barSpacing`, `parentScreen` (see DMS's `Vpn.qml`).
+- **Change saved data by adding, not reshaping**: unlock dates went into a new `unlockedAt` map next to the existing `achievements` id list. Old saves just lack the map, so no migration code is needed. A test loads a simulated 0.3.0 save to prove it.
+- **Grow APIs by adding, not changing**: achievement checks went from `test(summary)` to `test(summary, now)`. JS ignores extra arguments, so every existing `s => s.total >= 10` kept working untouched.
 - **Only `var` is exported from a JS library**: QML sees `Stats.ACHIEVEMENTS` only if it's declared with `var`, not `const`/`let`.
 - **Keep logic in a `.pragma library` JS file** to unit-test it with `node`: see `tests/DuckStats.test.js` (strips the pragma, evaluates in a `vm` sandbox; compare results as plain JSON).
 - **Use `??` for booleans**: `pluginData.showToast || true` would ignore a saved `false`.
-- **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.4–0.9.
+- **`PluginComponent` already has** `pillClickAction`, `pillRightClickAction`, `popoutContent`, `controlCenterWidget` / `ccWidget*`: useful for 0.5–0.10.

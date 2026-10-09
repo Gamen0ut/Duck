@@ -8,6 +8,17 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+### Added
+- 6 new milestone and streak achievements: 🎲 The answer (42), 😈 Devil's quack (666), 🕶️ Leet quacker (1337), 🌪️ Quack frenzy (100 in one day), 📅 Fortnight flock (14-day streak), 🗓️ Monthly migration (30-day streak).
+- 7 time and calendar achievements: 🦉 Night owl, 🐓 Early bird, 🎆 Happy new quack, 💘 Love quack, 🐸 Leap duck, 🎃 Spooky quack, 🎄 Jingle quack.
+- Secret achievements: the calendar ones show as "🔒 ???" in settings until unlocked.
+- 🏅 Completionist: unlock every other achievement.
+- Unlock dates shown in the settings achievement list (for achievements unlocked from now on).
+- "Achievement toasts" setting: grouped when more than 2, one toast per achievement, or off.
+
+### Changed
+- When more than 2 achievements unlock at once, they're announced in a single toast.
+
 ## [0.3.0] - 2026-10-09
 
 ### Added
