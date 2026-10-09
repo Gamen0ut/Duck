@@ -8,6 +8,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-09
+
 ### Added
 - Scroll over the duck to switch birds ("Scroll to change bird" setting, on by default). Works with touchpads too.
 - Right-click and middle-click actions, configurable in a new Mouse section: silent quack (default for right-click), random bird (default for middle-click), show stats, or nothing.
@@ -64,7 +66,8 @@ While Duck is a playground (`0.x`), minor bumps may break settings.
 - Settings: custom quack text, toast toggle.
 - `dev.sh` helper to link, reload and check the plugin status.
 
-[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/Gamen0ut/Duck/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/Gamen0ut/Duck/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Gamen0ut/Duck/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Gamen0ut/Duck/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Gamen0ut/Duck/compare/v0.1.0...v0.2.0
